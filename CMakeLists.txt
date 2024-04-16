@@ -10,6 +10,8 @@ set(CMAKE_USE_WIN32_THREADS_INIT 0)
 set(CMAKE_USE_PTHREADS_INIT 1)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
+set(OpenGL_GL_PREFERENCE GLVND)
+
 add_subdirectory(vendor)
 set(OpenCV_STATIC ON)
 find_package(OpenCV)
