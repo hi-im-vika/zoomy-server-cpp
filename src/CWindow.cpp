@@ -7,6 +7,9 @@
 #include "../include/CWindow.hpp"
 
 CWindow::CWindow(const std::string& title, const int width, const int height) {
+    _window_config.title = title;
+    _window_config.width = width;
+    _window_config.height = height;
 
     // Create window with graphics context
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -38,4 +41,8 @@ SDL_Window *CWindow::get_native_window() const {
 
 SDL_GLContext CWindow::get_native_context() const {
     return _gl_context;
+}
+
+config CWindow::get_config() const {
+    return _window_config;
 }
