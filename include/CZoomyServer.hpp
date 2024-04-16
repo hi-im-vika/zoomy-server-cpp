@@ -11,6 +11,11 @@
 #include "CCommonBase.hpp"
 
 class CZoomyServer : public CCommonBase {
+private:
+public:
     CZoomyServer();
     ~CZoomyServer();
+
+    void update() override;
+    void draw() override;
 };
