@@ -23,6 +23,11 @@ private:
     std::vector<uint8_t> _rx_buf;
     long _rx_bytes;
 
+    // OpenCV
+    cv::Mat _frame;
+    cv::Mat _camera_frame;
+    cv::VideoCapture _video_capture;
+
     void rx();
     void tx();
 
