@@ -54,7 +54,7 @@ void CZoomyServer::rx() {
     _rx_bytes = 0;
     _rx_buf.clear();
     _server.do_rx(_rx_buf, _client, _rx_bytes);
-    std::string temp = std::string(_rx_buf.begin(),_rx_buf.begin() + _rx_bytes);
+    std::vector<uint8_t> temp(_rx_buf.begin(),_rx_buf.begin() + _rx_bytes);
     // only add to rx queue if data is not empty
     if(!temp.empty()) _rx_queue.emplace(temp);
     std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(NET_DELAY));
@@ -63,8 +63,7 @@ void CZoomyServer::rx() {
 void CZoomyServer::tx() {
     for (; !_tx_queue.empty(); _tx_queue.pop()) {
 //            spdlog::info("Sending");
-        std::vector<uint8_t> tx_buf(_tx_queue.front().begin(),_tx_queue.front().end());
-        _server.do_tx(tx_buf,_client);
+        _server.do_tx(_tx_queue.front(),_client);
     }
     std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(NET_DELAY));
 }

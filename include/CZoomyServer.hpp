@@ -19,8 +19,7 @@ private:
     std::thread _thread_tx, _thread_rx;
     std::chrono::steady_clock::time_point _timeout_count;
     int _time_since_start;
-    std::queue<std::string> _tx_queue, _rx_queue;
-
+    std::queue<std::vector<uint8_t>> _tx_queue, _rx_queue;
     std::vector<uint8_t> _rx_buf;
     long _rx_bytes;
 
