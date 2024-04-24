@@ -30,7 +30,6 @@ CZoomyServer::CZoomyServer(std::string port) {
 CZoomyServer::~CZoomyServer() = default;
 
 void CZoomyServer::update() {
-//    spdlog::info("Server update");
 
     for (; !_rx_queue.empty(); _rx_queue.pop()) {
 
@@ -47,7 +46,6 @@ void CZoomyServer::update() {
 }
 
 void CZoomyServer::draw() {
-//    spdlog::info("Server draw");
     // servo control code goes here...
     std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
 }
