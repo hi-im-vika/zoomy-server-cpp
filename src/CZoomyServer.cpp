@@ -54,17 +54,12 @@ CZoomyServer::CZoomyServer(std::string port) {
 CZoomyServer::~CZoomyServer() = default;
 
 void CZoomyServer::update() {
+    _video_capture.read(_frame);
+    cv::Mat smaller;
+    cv::resize(_frame,smaller,cv::Size(480,360));
     for (; !_rx_queue.empty(); _rx_queue.pop()) {
-//        _video_capture.read(_frame);
-        cv::Mat payload = cv::Mat::ones(cv::Size(128, 96), CV_8UC3);
-        cv::randu(payload, cv::Scalar(0, 0, 0), cv::Scalar(255, 255, 255));
         std::vector<uint8_t> encoded;
-        cv::imencode(".jpg", payload, encoded);
-//        _video_capture.read(_frame);
-
-//            // acknowledge next data in queue
-//            spdlog::info("New in RX queue: " + rx_queue.front());
-//            spdlog::info("Remaining in queue: " + std::to_string(rx_queue.size()));
+        cv::imencode(".jpg", smaller, encoded);
 
         // echo client data back to client
 //        _tx_queue.emplace(std::string(encoded.begin, encoded);
@@ -74,7 +69,7 @@ void CZoomyServer::update() {
     }
 
     _time_since_start = (int) std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - _timeout_count).count();
-    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(NET_DELAY));
+//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(NET_DELAY));
 }
 
 void CZoomyServer::draw() {
