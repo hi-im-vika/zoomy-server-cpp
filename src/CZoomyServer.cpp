@@ -26,6 +26,16 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
     _thread_tx = std::thread(thread_tx, this);
     _thread_tx.detach();
 
+    // pigpio init
+    _raw_values = _values = std::vector<int>(8,0);
+    _output_pins.push_back(CControlPi::gpio_pins::STEERING);
+    _output_pins.push_back(CControlPi::gpio_pins::THROTTLE);
+    _output_pins.push_back(CControlPi::gpio_pins::HEARTBEAT);
+    _control.init_gpio(_input_pins, _output_pins);
+
+    gpioHardwarePWM(CControlPi::gpio_pins::STEERING, pwm::FREQ, pwm::CENTRE);
+    gpioHardwarePWM(CControlPi::gpio_pins::THROTTLE, pwm::FREQ, pwm::CENTRE);
+
     // OpenCV init
 
     /**
@@ -76,7 +86,11 @@ void CZoomyServer::update() {
 }
 
 void CZoomyServer::draw() {
-    // servo control code goes here...
+    auto steering = (float) (_values.at(0) / 32768.0);
+    auto throttle = (float) (_values.at(3) / 32768.0);
+    gpioHardwarePWM(CControlPi::gpio_pins::STEERING,pwm::FREQ,CZoomyServer::pwm::CENTRE + (int) (steering * CZoomyServer::pwm::MAX_RANGE));
+    gpioHardwarePWM(CControlPi::gpio_pins::THROTTLE,pwm::FREQ,CZoomyServer::pwm::CENTRE + (int) (throttle * -1 * CZoomyServer::pwm::MAX_RANGE));
+
     std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
 }
 

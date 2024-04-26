@@ -23,6 +23,17 @@ private:
     std::vector<uint8_t> _rx_buf;
     long _rx_bytes;
 
+    // pigpio
+    std::vector<int> _input_pins, _output_pins;
+    std::vector<int> _raw_values, _values;
+    CControlPi _control;
+    enum pwm {
+        FREQ = 71,
+        CENTRE = 106500,
+        NOM_RANGE = 24850,
+        MAX_RANGE = 35500
+    };
+
     // OpenCV
     cv::Mat _frame;
     cv::Mat _camera_frame;
