@@ -9,7 +9,7 @@
 #define PING_TIMEOUT 1000
 #define NET_DELAY 1
 
-CZoomyServer::CZoomyServer(std::string port) {
+CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
     _port = port;
 
     // net init
@@ -41,7 +41,9 @@ CZoomyServer::CZoomyServer(std::string port) {
 //    _video_capture = cv::VideoCapture("libcamerasrc ! video/x-raw, width=128, height=96 ! appsink", cv::CAP_GSTREAMER);
 //    _video_capture.open(0);
 //    _video_capture.open(2);
-    _video_capture = cv::VideoCapture("autovideosrc ! video/x-raw, framerate=30/1 ! videoscale ! videoconvert ! appsink", cv::CAP_GSTREAMER);
+    spdlog::info("Launching GStreamer with the below options:");
+    spdlog::info("\"" + gstreamer_string + "\"");
+    _video_capture = cv::VideoCapture(std::string(gstreamer_string), cv::CAP_GSTREAMER);
     if (!_video_capture.isOpened()) {
         spdlog::error("Could not open camera.");
         exit(-1);
@@ -107,8 +109,12 @@ void CZoomyServer::thread_tx(CZoomyServer *who_called) {
     }
 }
 
-int main() {
-    CZoomyServer c = CZoomyServer("46188", "autovideosrc ! video/x-raw, width=320, height=240, framerate=60/1 ! videoscale ! videoconvert ! appsink");
+int main(int argc, char *argv[]) {
+    if (argc != 3) {
+        std::cerr << "Usage: server <port> <gstreamer string>" << std::endl;
+        return 1;
+    }
+    CZoomyServer c = CZoomyServer(argv[1], argv[2]);
     c.run();
     return 0;
 }

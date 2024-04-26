@@ -32,7 +32,7 @@ private:
     void tx();
 
 public:
-    CZoomyServer(std::string port);
+    CZoomyServer(std::string port, std::string gstreamer_string);
     ~CZoomyServer();
 
     void update() override;
