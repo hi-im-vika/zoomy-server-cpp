@@ -14,6 +14,7 @@ add_subdirectory(vendor)
 set(OpenCV_STATIC ON)
 find_package(OpenCV REQUIRED)
 find_package(spdlog REQUIRED)
+find_library(PIGPIO_LIBS pigpio REQUIRED)
 
 add_executable(zoomy-server
         src/CZoomyServer.cpp
@@ -21,4 +22,4 @@ add_executable(zoomy-server
         src/CCommonBase.cpp
         include/CCommonBase.hpp
 )
-target_link_libraries(zoomy-server ${OpenCV_LIBS} spdlog::spdlog vika-udp)
+target_link_libraries(zoomy-server ${OpenCV_LIBS} ${PIGPIO_LIBS} spdlog::spdlog vika-udp)
