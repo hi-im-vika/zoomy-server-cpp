@@ -38,9 +38,6 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
      * _video_capture = cv::VideoCapture("libcamerasrc ! video/x-raw, width=128, height=96 ! appsink", cv::CAP_GSTREAMER);
      */
 
-//    _video_capture = cv::VideoCapture("libcamerasrc ! video/x-raw, width=128, height=96 ! appsink", cv::CAP_GSTREAMER);
-//    _video_capture.open(0);
-//    _video_capture.open(2);
     spdlog::info("Launching GStreamer with the below options:");
     spdlog::info("\"" + gstreamer_string + "\"");
     _video_capture = cv::VideoCapture(std::string(gstreamer_string), cv::CAP_GSTREAMER);
