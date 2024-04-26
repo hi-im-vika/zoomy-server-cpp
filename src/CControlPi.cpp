@@ -6,6 +6,7 @@
 
 #include "../include/CControlPi.h"
 
+// TODO: initialize compass/orientation sensor
 void CControlPi::init() {
     gpioInitialise();
 }
@@ -60,6 +61,7 @@ bool CControlPi::set_data(data_type type, int channel, int val) {
     }
 }
 
+// TODO: add/change functions to produce four hardware timer backed pwm outputs
 bool CControlPi::servo_talker(CControlPi::data_op op, int channel, int set_val, int &result) {
     switch (op) {
         case data_op::WRITE:
