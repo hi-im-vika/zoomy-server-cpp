@@ -9,6 +9,7 @@
 #include <iostream>
 #include <CUDPServer.hpp>
 #include "CCommonBase.hpp"
+#include "CControlPi.h"
 
 class CZoomyServer : public CCommonBase {
 private:
