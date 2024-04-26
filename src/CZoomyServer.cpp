@@ -62,6 +62,7 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
 
 CZoomyServer::~CZoomyServer() = default;
 
+// TODO: split up image capture and rx data processing into threads
 void CZoomyServer::update() {
     _video_capture.read(_frame);
     cv::Mat smaller;
