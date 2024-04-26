@@ -108,8 +108,7 @@ void CZoomyServer::thread_tx(CZoomyServer *who_called) {
 }
 
 int main() {
-//    std::cout << "Hello, World!" << std::endl;
-    CZoomyServer c = CZoomyServer("46188");
+    CZoomyServer c = CZoomyServer("46188", "autovideosrc ! video/x-raw, width=320, height=240, framerate=60/1 ! videoscale ! videoconvert ! appsink");
     c.run();
     return 0;
 }
