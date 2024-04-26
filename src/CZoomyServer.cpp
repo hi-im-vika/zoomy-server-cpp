@@ -60,6 +60,10 @@ void CZoomyServer::update() {
     cv::Mat smaller;
     cv::resize(_frame,smaller,cv::Size(480,360));
     for (; !_rx_queue.empty(); _rx_queue.pop()) {
+
+        // process received control values
+//        process_rx(_rx_queue.front());
+
         std::vector<uint8_t> encoded;
         cv::imencode(".jpg", smaller, encoded);
 
@@ -106,6 +110,19 @@ void CZoomyServer::thread_rx(CZoomyServer *who_called) {
 void CZoomyServer::thread_tx(CZoomyServer *who_called) {
     while (!who_called->_do_exit) {
         who_called->tx();
+    }
+}
+
+void CZoomyServer::process_rx(std::string &rx) {
+    std::stringstream ss;
+    std::string temp;
+    ss.str(rx);
+    int idx = 0;
+    while(ss >> temp) {
+        if (idx >= 2) {
+            _values.at(idx - 2) = std::stoi(temp);
+        }
+        idx++;
     }
 }
 
