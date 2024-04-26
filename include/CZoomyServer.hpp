@@ -11,6 +11,17 @@
 #include "CCommonBase.hpp"
 #include "CControlPi.h"
 
+enum value_type {
+    GC_LEFTX,
+    GC_LEFTY,
+    GC_RIGHTX,
+    GC_RIGHTY,
+    GC_A,
+    GC_B,
+    GC_X,
+    GC_Y,
+};
+
 class CZoomyServer : public CCommonBase {
 private:
     // net
