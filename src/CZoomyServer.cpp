@@ -71,7 +71,11 @@ void CZoomyServer::update() {
     for (; !_rx_queue.empty(); _rx_queue.pop()) {
 
         // process received control values
-//        process_rx(_rx_queue.front());
+        std::string as_string(std::string(_rx_queue.front().begin(),_rx_queue.front().end()));
+//        spdlog::info("Received: " + as_string);
+        if (as_string != "\005") {
+            process_rx(as_string);
+        }
 
         std::vector<uint8_t> encoded;
         cv::imencode(".jpg", smaller, encoded);
