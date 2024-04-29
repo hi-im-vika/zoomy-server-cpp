@@ -33,6 +33,7 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
     _output_pins.push_back(CControlPi::gpio_pins::HEARTBEAT);
     _control.init_gpio(_input_pins, _output_pins);
 
+    // set values to neutral
     gpioHardwarePWM(CControlPi::gpio_pins::STEERING, pwm::FREQ, pwm::CENTRE);
     gpioHardwarePWM(CControlPi::gpio_pins::THROTTLE, pwm::FREQ, pwm::CENTRE);
 
