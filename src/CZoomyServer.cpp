@@ -26,21 +26,18 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
     _thread_tx = std::thread(thread_tx, this);
     _thread_tx.detach();
 
+    // pigpio init
+    _raw_values = _values = std::vector<int>(8,0);
+
+    _output_pins.push_back(gpio_pins::MOTOR_NW);
+    _output_pins.push_back(gpio_pins::MOTOR_NE);
+    _output_pins.push_back(gpio_pins::MOTOR_SW);
+    _output_pins.push_back(gpio_pins::MOTOR_SE);
+
+    _control.init_gpio(_input_pins, _output_pins);
+
     // OpenCV init
 
-    /**
-     * camera selection
-     * facetime hd camera:
-     * _video_capture.open(0);
-     * continuity:
-     * _video_capture.open(2);
-     * raspberry pi:
-     * _video_capture = cv::VideoCapture("libcamerasrc ! video/x-raw, width=128, height=96 ! appsink", cv::CAP_GSTREAMER);
-     */
-
-//    _video_capture = cv::VideoCapture("libcamerasrc ! video/x-raw, width=128, height=96 ! appsink", cv::CAP_GSTREAMER);
-//    _video_capture.open(0);
-//    _video_capture.open(2);
     spdlog::info("Launching GStreamer with the below options:");
     spdlog::info("\"" + gstreamer_string + "\"");
     _video_capture = cv::VideoCapture(std::string(gstreamer_string), cv::CAP_GSTREAMER);
@@ -55,11 +52,16 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
 
 CZoomyServer::~CZoomyServer() = default;
 
+// TODO: split up image capture and rx data processing into threads
 void CZoomyServer::update() {
     _video_capture.read(_frame);
     cv::Mat smaller;
     cv::resize(_frame,smaller,cv::Size(480,360));
     for (; !_rx_queue.empty(); _rx_queue.pop()) {
+
+        // process received control values
+//        process_rx(_rx_queue.front());
+
         std::vector<uint8_t> encoded;
         cv::imencode(".jpg", smaller, encoded);
 
@@ -75,7 +77,23 @@ void CZoomyServer::update() {
 }
 
 void CZoomyServer::draw() {
-    // servo control code goes here...
+
+    // DEBUG: cycle between 0% and 100% duty cycle for PWM motor control
+    for (int duty = 0; duty < 255; duty++) {
+        gpioPWM(gpio_pins::MOTOR_NW, 0 + duty);
+        gpioPWM(gpio_pins::MOTOR_NE, 0 + duty);
+        gpioPWM(gpio_pins::MOTOR_SW, 0 + duty);
+        gpioPWM(gpio_pins::MOTOR_SE, 0 + duty);
+        std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
+    }
+    for (int duty = 0; duty < 255; duty++) {
+        gpioPWM(gpio_pins::MOTOR_NW, 255 - duty);
+        gpioPWM(gpio_pins::MOTOR_NE, 255 - duty);
+        gpioPWM(gpio_pins::MOTOR_SW, 255 - duty);
+        gpioPWM(gpio_pins::MOTOR_SE, 255 - duty);
+        std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
+    }
+
     std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
 }
 
@@ -106,6 +124,19 @@ void CZoomyServer::thread_rx(CZoomyServer *who_called) {
 void CZoomyServer::thread_tx(CZoomyServer *who_called) {
     while (!who_called->_do_exit) {
         who_called->tx();
+    }
+}
+
+void CZoomyServer::process_rx(std::string &rx) {
+    std::stringstream ss;
+    std::string temp;
+    ss.str(rx);
+    int idx = 0;
+    while(ss >> temp) {
+        if (idx >= 2) {
+            _values.at(idx - 2) = std::stoi(temp);
+        }
+        idx++;
     }
 }
 
