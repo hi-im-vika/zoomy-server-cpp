@@ -7,9 +7,9 @@
 #include "../include/CControlPi.hpp"
 
 // TODO: initialize compass/orientation sensor
-void CControlPi::init() {
-    gpioInitialise();
-}
+//void CControlPi::init() {
+//    gpioInitialise();
+//}
 
 void CControlPi::zap_com() {
     gpioTerminate();
