@@ -22,7 +22,7 @@ add_executable(zoomy-server
         src/CCommonBase.cpp
         include/CCommonBase.hpp
         src/CControlPi.cpp
-        include/CControlPi.h
+        include/CControlPi.hpp
         src/CMecanumMove.cpp
         include/CMecanumMove.hpp
 )

@@ -4,7 +4,7 @@
  * vika <https://github.com/hi-im-vika>
  */
 
-#include "../include/CControlPi.h"
+#include "../include/CControlPi.hpp"
 
 // TODO: initialize compass/orientation sensor
 void CControlPi::init() {
