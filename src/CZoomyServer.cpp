@@ -83,21 +83,21 @@ void CZoomyServer::update() {
 
 void CZoomyServer::draw() {
 
-    // DEBUG: cycle between 0% and 100% duty cycle for PWM motor control
-    for (int duty = 0; duty < 255; duty++) {
-        gpioPWM(gpio_pins::MOTOR_NW, 0 + duty);
-        gpioPWM(gpio_pins::MOTOR_NE, 0 + duty);
-        gpioPWM(gpio_pins::MOTOR_SW, 0 + duty);
-        gpioPWM(gpio_pins::MOTOR_SE, 0 + duty);
-        std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
-    }
-    for (int duty = 0; duty < 255; duty++) {
-        gpioPWM(gpio_pins::MOTOR_NW, 255 - duty);
-        gpioPWM(gpio_pins::MOTOR_NE, 255 - duty);
-        gpioPWM(gpio_pins::MOTOR_SW, 255 - duty);
-        gpioPWM(gpio_pins::MOTOR_SE, 255 - duty);
-        std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
-    }
+//    // DEBUG: cycle between 0% and 100% duty cycle for PWM motor control
+//    for (int duty = 0; duty < 255; duty++) {
+//        gpioPWM(gpio_pins::MOTOR_NW, 0 + duty);
+//        gpioPWM(gpio_pins::MOTOR_NE, 0 + duty);
+//        gpioPWM(gpio_pins::MOTOR_SW, 0 + duty);
+//        gpioPWM(gpio_pins::MOTOR_SE, 0 + duty);
+//        std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
+//    }
+//    for (int duty = 0; duty < 255; duty++) {
+//        gpioPWM(gpio_pins::MOTOR_NW, 255 - duty);
+//        gpioPWM(gpio_pins::MOTOR_NE, 255 - duty);
+//        gpioPWM(gpio_pins::MOTOR_SW, 255 - duty);
+//        gpioPWM(gpio_pins::MOTOR_SE, 255 - duty);
+//        std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
+//    }
 
     std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
 }
