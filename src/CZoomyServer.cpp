@@ -22,6 +22,16 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
             pins::MOTOR_SE,
     };
 
+    if (!_control.init_gpio(_input_pins, _output_pins)) {
+        spdlog::error("Error during GPIO init.");
+        exit(-1);
+    }
+
+    if (!_control.init_i2c(CControlPi::i2c_ch::CH1, devices::PCA9685)) {
+        spdlog::error("Error during I2C init.");
+        exit(-1);
+    }
+
     // net init
     _timeout_count = std::chrono::steady_clock::now();
     _time_since_start = 0;
