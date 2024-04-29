@@ -29,6 +29,10 @@ enum pins {
     MOTOR_SE = 13,
 };
 
+enum devices {
+    PCA9685 = 0x40
+};
+
 class CZoomyServer : public CCommonBase {
 private:
     // net
