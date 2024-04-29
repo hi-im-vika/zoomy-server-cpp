@@ -137,9 +137,7 @@ void CZoomyServer::process_rx(std::string &rx) {
     ss.str(rx);
     int idx = 0;
     while(ss >> temp) {
-        if (idx >= 2) {
-            _values.at(idx - 2) = std::stoi(temp);
-        }
+        _values.at(idx) = std::stoi(temp);
         idx++;
     }
 }
