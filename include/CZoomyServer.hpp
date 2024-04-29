@@ -22,7 +22,7 @@ enum value_type {
     GC_Y,
 };
 
-enum gpio_pins {
+enum pins {
     MOTOR_NW = 5,
     MOTOR_NE = 6,
     MOTOR_SW = 12,
