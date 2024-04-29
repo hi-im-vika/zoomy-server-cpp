@@ -60,14 +60,19 @@ void CZoomyServer::update() {
     for (; !_rx_queue.empty(); _rx_queue.pop()) {
 
         // process received control values
-//        process_rx(_rx_queue.front());
+        std::string as_string(std::string(_rx_queue.front().begin(),_rx_queue.front().end()));
+//        spdlog::info("Received: " + as_string);
+        if (as_string != "\005") {
+            process_rx(as_string);
+        }
 
         std::vector<uint8_t> encoded;
         cv::imencode(".jpg", smaller, encoded);
 
+        std::string payload("test");
         // echo client data back to client
 //        _tx_queue.emplace(std::string(encoded.begin, encoded);
-        std::vector<uint8_t> tx_assembled(_rx_queue.front());
+        std::vector<uint8_t> tx_assembled(payload.begin(),payload.end());
         tx_assembled.insert(tx_assembled.end(),encoded.begin(),encoded.end());
         _tx_queue.emplace(tx_assembled);
     }
@@ -133,9 +138,7 @@ void CZoomyServer::process_rx(std::string &rx) {
     ss.str(rx);
     int idx = 0;
     while(ss >> temp) {
-        if (idx >= 2) {
-            _values.at(idx - 2) = std::stoi(temp);
-        }
+        _values.at(idx) = std::stoi(temp);
         idx++;
     }
 }
