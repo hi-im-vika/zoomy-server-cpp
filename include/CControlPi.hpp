@@ -26,6 +26,9 @@
  */
 class CControlPi {
 private:
+    // game controller
+    std::vector<int> _values;
+
     // i2c setup
     bool _ready_i2c;
 
