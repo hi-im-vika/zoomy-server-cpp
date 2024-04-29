@@ -23,5 +23,7 @@ add_executable(zoomy-server
         include/CCommonBase.hpp
         src/CControlPi.cpp
         include/CControlPi.h
+        src/CMecanumMove.cpp
+        include/CMecanumMove.hpp
 )
 target_link_libraries(zoomy-server ${OpenCV_LIBS} ${PIGPIO_LIBS} spdlog::spdlog vika-udp)
