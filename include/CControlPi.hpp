@@ -26,20 +26,20 @@
  */
 class CControlPi {
 private:
-    int _servo_result;
-    int _servo_pos;
-    int _servo_pos_converted;
-    uint8_t input_buffer[3];
+    // i2c setup
+    bool _ready_i2c;
+
+    // gpio setup
+    bool _ready_gpio;
 public:
     enum i2c_ch {
-        CH0,
-        CH1
+        CH0 = 0,
+        CH1 = 1
     };
     CControlPi() = default;
     ~CControlPi() = default;
-    void init();
-    void init_gpio(const std::vector<int> &input_pins, std::vector<int> &output_pins);
-    int init_i2c(i2c_ch ch, uint address);
+    bool init_gpio(const std::vector<int> &input_pins, std::vector<int> &output_pins);
+    bool init_i2c(i2c_ch ch, uint address);
 //    bool get_data(data_type type, int channel, int &result);
 //    bool set_data(data_type type, int channel, int val);
 //    bool servo_talker(CControlPi::data_op op, int channel, int set_val, int &result);

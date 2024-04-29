@@ -15,25 +15,45 @@ void CControlPi::zap_com() {
     gpioTerminate();
 }
 
-void CControlPi::init_gpio(const std::vector<int> &input_pins, std::vector<int> &output_pins) {
+bool CControlPi::init_gpio(const std::vector<int> &input_pins, std::vector<int> &output_pins) {
     if (gpioInitialise() < 0) {
         std::cout << "Error during GPIO init" << std::endl;
-        exit(-1);
+        _ready_gpio = false;
+        return _ready_gpio;
     }
     if (!input_pins.empty()) {
         for (auto i: input_pins) {
-            gpioSetMode(i, PI_INPUT);
+            if (gpioSetMode(i, PI_INPUT) != 0) {
+                std::cout << "Error during GPIO input pin setup" << std::endl;
+                _ready_gpio = false;
+                return _ready_gpio;
+            }
         }
     }
     if (!output_pins.empty()) {
         for (auto i: output_pins) {
-            gpioSetMode(i, PI_OUTPUT);
+            if (gpioSetMode(i, PI_INPUT) != 0) {
+                std::cout << "Error during GPIO output pin setup" << std::endl;
+                _ready_gpio = false;
+                return _ready_gpio;
+            }
         }
     }
+    _ready_gpio = true;
+    return _ready_gpio;
 }
 
-int CControlPi::init_i2c(i2c_ch ch, uint address = 0x7F) {
-    return i2cOpen(ch, address, 0);
+bool CControlPi::init_i2c(i2c_ch ch, uint address) {
+    int i2c_code = i2cOpen(ch, address, 0);
+    std::cout << i2c_code << std::endl;
+    if (i2c_code < 0) {
+        std::cout << "Error during I2C setup" << std::endl;
+        _ready_i2c = false;
+        return _ready_i2c;
+    }
+    std::cout << "I2C setup with peripheral address " << std::hex << address << std::endl;
+    _ready_i2c = true;
+    return _ready_i2c;
 }
 
 //bool CControlPi::get_data(data_type type, int channel, int &result) {
