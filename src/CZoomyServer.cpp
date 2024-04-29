@@ -12,6 +12,13 @@
 CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
     _port = port;
 
+    // pigpio init
+    _raw_values = _values = std::vector<int>(8,0);
+
+    _output_pins.push_back(gpio_pins::MOTOR_NW);
+    _output_pins.push_back(gpio_pins::MOTOR_NE);
+    _output_pins.push_back(gpio_pins::MOTOR_SW);
+    _output_pins.push_back(gpio_pins::MOTOR_SE);
     // net init
     _timeout_count = std::chrono::steady_clock::now();
     _time_since_start = 0;
@@ -25,16 +32,6 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
     // start send thread
     _thread_tx = std::thread(thread_tx, this);
     _thread_tx.detach();
-
-    // pigpio init
-    _raw_values = _values = std::vector<int>(8,0);
-
-    _output_pins.push_back(gpio_pins::MOTOR_NW);
-    _output_pins.push_back(gpio_pins::MOTOR_NE);
-    _output_pins.push_back(gpio_pins::MOTOR_SW);
-    _output_pins.push_back(gpio_pins::MOTOR_SE);
-
-    _control.init_gpio(_input_pins, _output_pins);
 
     // OpenCV init
 
