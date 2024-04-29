@@ -76,9 +76,10 @@ void CZoomyServer::update() {
         std::vector<uint8_t> encoded;
         cv::imencode(".jpg", smaller, encoded);
 
+        std::string payload("test");
         // echo client data back to client
 //        _tx_queue.emplace(std::string(encoded.begin, encoded);
-        std::vector<uint8_t> tx_assembled(_rx_queue.front());
+        std::vector<uint8_t> tx_assembled(payload.begin(),payload.end());
         tx_assembled.insert(tx_assembled.end(),encoded.begin(),encoded.end());
         _tx_queue.emplace(tx_assembled);
     }
