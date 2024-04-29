@@ -61,7 +61,7 @@ void CZoomyServer::update() {
 
         // process received control values
         std::string as_string(std::string(_rx_queue.front().begin(),_rx_queue.front().end()));
-//        spdlog::info("Received: " + as_string);
+        spdlog::info("Received: " + as_string);
         if (as_string != "\005") {
             process_rx(as_string);
         }
