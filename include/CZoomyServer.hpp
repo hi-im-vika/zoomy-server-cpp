@@ -9,7 +9,7 @@
 #include <iostream>
 #include <CUDPServer.hpp>
 #include "CCommonBase.hpp"
-#include "CControlPi.h"
+#include "CControlPi.hpp"
 
 enum value_type {
     GC_LEFTX,
