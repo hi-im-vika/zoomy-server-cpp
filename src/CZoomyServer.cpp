@@ -15,10 +15,13 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
     // pigpio init
     _raw_values = _values = std::vector<int>(8,0);
 
-    _output_pins.push_back(gpio_pins::MOTOR_NW);
-    _output_pins.push_back(gpio_pins::MOTOR_NE);
-    _output_pins.push_back(gpio_pins::MOTOR_SW);
-    _output_pins.push_back(gpio_pins::MOTOR_SE);
+    _output_pins = {
+            pins::MOTOR_NW,
+            pins::MOTOR_NE,
+            pins::MOTOR_SW,
+            pins::MOTOR_SE,
+    };
+
     // net init
     _timeout_count = std::chrono::steady_clock::now();
     _time_since_start = 0;
