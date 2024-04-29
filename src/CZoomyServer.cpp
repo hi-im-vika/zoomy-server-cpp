@@ -28,13 +28,13 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
 
     // pigpio init
     _raw_values = _values = std::vector<int>(8,0);
-    _output_pins.push_back(CControlPi::gpio_pins::STEERING);
-    _output_pins.push_back(CControlPi::gpio_pins::THROTTLE);
-    _output_pins.push_back(CControlPi::gpio_pins::HEARTBEAT);
-    _control.init_gpio(_input_pins, _output_pins);
 
-    gpioHardwarePWM(CControlPi::gpio_pins::STEERING, pwm::FREQ, pwm::CENTRE);
-    gpioHardwarePWM(CControlPi::gpio_pins::THROTTLE, pwm::FREQ, pwm::CENTRE);
+    _output_pins.push_back(gpio_pins::MOTOR_NW);
+    _output_pins.push_back(gpio_pins::MOTOR_NE);
+    _output_pins.push_back(gpio_pins::MOTOR_SW);
+    _output_pins.push_back(gpio_pins::MOTOR_SE);
+
+    _control.init_gpio(_input_pins, _output_pins);
 
     // OpenCV init
 
