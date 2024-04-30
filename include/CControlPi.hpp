@@ -56,11 +56,12 @@ public:
         CH0 = 0,
         CH1 = 1
     };
-    CControlPi() = default;
-    ~CControlPi() = default;
     enum i2c_devices {
         ADDR_DEFAULT_PCA9685 = 0x40
     };
+
+    CControlPi();
+    ~CControlPi();
 
     bool init_gpio(const std::vector<int> &input_pins, std::vector<int> &output_pins);
     bool init_i2c(i2c_ch ch, uint address);
