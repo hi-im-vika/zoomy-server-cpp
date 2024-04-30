@@ -42,6 +42,8 @@ private:
 
     // i2c setup
     bool _ready_i2c;
+    int _i2c_handle;
+    bool _ready_pca9685;
 
     // gpio setup
     bool _ready_gpio;
@@ -64,6 +66,7 @@ public:
     ~CControlPi();
 
     bool init_gpio(const std::vector<int> &input_pins, std::vector<int> &output_pins);
+    bool init_pca9685(i2c_ch ch, uint address = ADDR_DEFAULT_PCA9685);
     bool init_i2c(i2c_ch ch, uint address);
     void zap_com();
 
