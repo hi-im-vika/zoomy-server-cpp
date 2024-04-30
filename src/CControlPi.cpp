@@ -60,7 +60,7 @@ bool CControlPi::init_i2c(i2c_ch ch, uint address) {
         _ready_i2c = false;
         return _ready_i2c;
     }
-    std::cout << "I2C setup with peripheral address " << std::hex << address << std::endl;
+    std::cout << "I2C setup with peripheral address 0x" << std::hex << address << std::endl;
     _ready_i2c = true;
     return _ready_i2c;
 }
