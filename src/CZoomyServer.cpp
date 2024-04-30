@@ -15,13 +15,6 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
     // pigpio init
     _raw_values = _values = std::vector<int>(8,0);
 
-    _output_pins = {
-            pins::M_NW,
-            pins::M_NE,
-            pins::M_SW,
-            pins::M_SE,
-    };
-
     if (!_control.init_gpio(_input_pins, _output_pins)) {
         spdlog::error("Error during GPIO init.");
         exit(-1);

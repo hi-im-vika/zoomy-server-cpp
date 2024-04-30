@@ -22,13 +22,6 @@ enum value_type {
     GC_Y,
 };
 
-enum pins {
-    MOTOR_NW = 5,
-    MOTOR_NE = 6,
-    MOTOR_SW = 12,
-    MOTOR_SE = 13,
-};
-
 enum devices {
     PCA9685 = 0x40
 };
