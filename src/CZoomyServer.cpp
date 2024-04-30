@@ -68,7 +68,7 @@ void CZoomyServer::update() {
         std::string as_string(std::string(_rx_queue.front().begin(),_rx_queue.front().end()));
 //        spdlog::info("Received: " + as_string);
         if (as_string != "\005") {
-            process_rx(as_string);
+            _control.queue_new_gc_data(as_string);
         }
 
         std::vector<uint8_t> encoded;
@@ -93,7 +93,7 @@ void CZoomyServer::draw() {
     }
     spdlog::info(ss.str());
 
-    int converted = (int) ( ((float) _values.at(GC_LEFTY) / 32768.0) * 4095);
+    int converted = (int) ( ((float) _control.get_gc_values().at(GC_LEFTY) / 32768.0) * 4095);
     converted = (abs(converted) > 100 ? converted : 0);
     _control.pca9685_motor_control(CControlPi::motor::M_NE, converted);
     _control.pca9685_motor_control(CControlPi::motor::M_NW, converted);
@@ -165,17 +165,6 @@ void CZoomyServer::thread_rx(CZoomyServer *who_called) {
 void CZoomyServer::thread_tx(CZoomyServer *who_called) {
     while (!who_called->_do_exit) {
         who_called->tx();
-    }
-}
-
-void CZoomyServer::process_rx(std::string &rx) {
-    std::stringstream ss;
-    std::string temp;
-    ss.str(rx);
-    int idx = 0;
-    while(ss >> temp) {
-        _values.at(idx) = std::stoi(temp);
-        idx++;
     }
 }
 

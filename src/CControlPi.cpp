@@ -11,6 +11,7 @@ CControlPi::CControlPi() {
     _ready_gpio = false;
     _ready_i2c = false;
     _ready_pca9685 = false;
+    _i2c_handle = 0;
     _gc_values = std::vector<int>(8, 0);
 
     // start send thread

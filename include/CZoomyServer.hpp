@@ -29,6 +29,7 @@ enum devices {
 
 class CZoomyServer : public CCommonBase {
 private:
+
     // net
     std::string _port;
     sockaddr_in _client{};
@@ -50,7 +51,6 @@ private:
     cv::Mat _camera_frame;
     cv::VideoCapture _video_capture;
 
-    void process_rx(std::string &rx);
     void rx();
     void tx();
 
