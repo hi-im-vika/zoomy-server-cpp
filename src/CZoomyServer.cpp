@@ -62,7 +62,7 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
 
 CZoomyServer::~CZoomyServer() {
     _control.zap_com();
-};
+}
 
 // TODO: split up image capture and rx data processing into threads
 void CZoomyServer::update() {
