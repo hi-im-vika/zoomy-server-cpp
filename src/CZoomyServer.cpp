@@ -8,6 +8,7 @@
 
 #define PING_TIMEOUT 1000
 #define NET_DELAY 1
+#define DEADZONE 0.05
 
 CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
     _port = port;
@@ -65,7 +66,7 @@ void CZoomyServer::update() {
 
         // process received control values
         std::string as_string(std::string(_rx_queue.front().begin(),_rx_queue.front().end()));
-//        spdlog::info("Received: " + as_string);
+        //spdlog::info("Received: " + as_string);
         if (as_string != "\005") {
             _control.queue_new_gc_data(as_string);
         }
@@ -86,13 +87,47 @@ void CZoomyServer::update() {
 }
 
 void CZoomyServer::draw() {
-
+    /* TANK MOVEMENT TEMP
+    std::vector<int> gc = _control.get_gc_values();
+    if ((gc[0] * gc[0] + gc[1] * gc[1]) > (DEADZONE * 1073741824)) {
+        _control.pca9685_motor_control(CControlPi::M_NW, -gc[1] / 8);
+        _control.pca9685_motor_control(CControlPi::M_SW, -gc[1] / 8);
+    }
+    else {
+        _control.pca9685_motor_control(CControlPi::M_NW, 0);
+        _control.pca9685_motor_control(CControlPi::M_SW, 0);
+    }
+    if ((gc[2] * gc[2] + gc[3] * gc[3]) > (DEADZONE * 1073741824)) {
+        _control.pca9685_motor_control(CControlPi::M_NE, -gc[3] / 8);
+        _control.pca9685_motor_control(CControlPi::M_SE, -gc[3] / 8);
+    }
+    else {
+        _control.pca9685_motor_control(CControlPi::M_NE, 0);
+        _control.pca9685_motor_control(CControlPi::M_SE, 0);
+    }
+     */
+    std::vector<int> gc = _control.get_gc_values();
+    float speed = hypot(gc[0] / 8.0, gc[1] / 8.0);
+    float theta = atan2(-gc[0], -gc[1]);
+    if ((speed > (DEADZONE * 4096.0)) || (gc[2] * gc[2] + gc[3] * gc[3]) > (DEADZONE * 1073741824)) {
+        _control.pca9685_motor_control(CControlPi::M_NW, (speed * (cos(theta) + sin(theta)) + (gc[2] / 8.0)) / 5);
+        _control.pca9685_motor_control(CControlPi::M_SW, (speed * (cos(theta) - sin(theta)) + (gc[2] / 8.0)) / 5);
+        _control.pca9685_motor_control(CControlPi::M_NE, (speed * (cos(theta) - sin(theta)) - (gc[2] / 8.0)) / 5);
+        _control.pca9685_motor_control(CControlPi::M_SE, (speed * (cos(theta) + sin(theta)) - (gc[2] / 8.0)) / 5);
+    }
+    else {
+        _control.pca9685_motor_control(CControlPi::M_NW, 0);
+        _control.pca9685_motor_control(CControlPi::M_SW, 0);
+        _control.pca9685_motor_control(CControlPi::M_NE, 0);
+        _control.pca9685_motor_control(CControlPi::M_SE, 0);
+    }
+/*
     int converted = (int) ( ((float) _control.get_gc_values().at(GC_LEFTY) / 32768.0) * 4095);
     converted = (abs(converted) > 100 ? converted : 0);
     _control.pca9685_motor_control(CControlPi::motor::M_NE, converted);
     _control.pca9685_motor_control(CControlPi::motor::M_NW, converted);
     _control.pca9685_motor_control(CControlPi::motor::M_SE, converted);
-    _control.pca9685_motor_control(CControlPi::motor::M_SW, converted);
+    _control.pca9685_motor_control(CControlPi::motor::M_SW, converted); */
 //    spdlog::info("{:d}",converted);
 
     std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
