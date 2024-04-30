@@ -7,6 +7,7 @@
 #pragma once
 
 #include <iostream>
+#include <spdlog/fmt/fmt.h>
 #include <CUDPServer.hpp>
 #include "CCommonBase.hpp"
 #include "CControlPi.hpp"
