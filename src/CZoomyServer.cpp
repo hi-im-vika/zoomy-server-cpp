@@ -27,8 +27,8 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
         exit(-1);
     }
 
-    if (!_control.init_i2c(CControlPi::i2c_ch::CH1, devices::PCA9685)) {
-        spdlog::error("Error during I2C init.");
+    if (!_control.init_pca9685(CControlPi::i2c_ch::CH1)) {
+        spdlog::error("Error during PCA9685 init.");
         exit(-1);
     }
 
