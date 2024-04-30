@@ -16,10 +16,10 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
     _raw_values = _values = std::vector<int>(8,0);
 
     _output_pins = {
-            pins::MOTOR_NW,
-            pins::MOTOR_NE,
-            pins::MOTOR_SW,
-            pins::MOTOR_SE,
+            pins::M_NW,
+            pins::M_NE,
+            pins::M_SW,
+            pins::M_SE,
     };
 
     if (!_control.init_gpio(_input_pins, _output_pins)) {
