@@ -11,6 +11,11 @@ CControlPi::CControlPi() {
     _ready_gpio = false;
     _ready_i2c = false;
     _ready_pca9685 = false;
+    _gc_values = std::vector<int>(8, 0);
+
+    // start send thread
+    _thread_process_gc = std::thread(thread_process_gc, this);
+    _thread_process_gc.detach();
 }
 
 CControlPi::~CControlPi() {
@@ -147,6 +152,34 @@ void CControlPi::pca9685_motor_control(motor m, int value) {
                 break;
         }
         return;
+    }
+}
+
+void CControlPi::queue_new_gc_data(std::string &data) {
+    _gc_queue.emplace(data);
+}
+
+std::vector<int> CControlPi::get_gc_values() {
+    return _gc_values;
+}
+
+void CControlPi::process_gc(std::string &gc) {
+    std::stringstream ss;
+    std::string temp;
+    ss.str(gc);
+    int idx = 0;
+    while(ss >> temp) {
+        _gc_values.at(idx) = std::stoi(temp);
+        idx++;
+    }
+}
+
+void CControlPi::thread_process_gc(CControlPi *who_called) {
+    while (!who_called->_do_exit) {
+        for (; !who_called->_gc_queue.empty(); who_called->_gc_queue.pop()) {
+            who_called->process_gc(who_called->_gc_queue.front());
+        }
+//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(NET_DELAY));
     }
 }
 

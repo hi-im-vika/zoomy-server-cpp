@@ -19,6 +19,7 @@
 #include <linux/input.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <queue>
 
 /**
  * @brief A class to provide physical input for the Raspberry Pi.
@@ -37,8 +38,15 @@ private:
         MREG_SW_F = 0x24,
     };
 
+    bool _do_exit = false;
+
     // game controller
-    std::vector<int> _values;
+    std::thread _thread_process_gc;
+    std::queue<std::string> _gc_queue;
+    std::vector<int> _gc_values;
+
+    void process_gc(std::string &gc);
+    static void thread_process_gc(CControlPi *who_called);
 
     // i2c setup
     bool _ready_i2c;
@@ -47,6 +55,7 @@ private:
 
     // gpio setup
     bool _ready_gpio;
+
 public:
     enum motor {
         M_NE,
@@ -76,4 +85,7 @@ public:
     bool i2c_write_word(uint reg, uint word);
 
     void pca9685_motor_control(motor m, int value);
+
+    void queue_new_gc_data(std::string &data);
+    std::vector<int> get_gc_values();
 };
