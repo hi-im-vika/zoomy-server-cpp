@@ -18,7 +18,11 @@ CControlPi::~CControlPi() {
 }
 
 void CControlPi::zap_com() {
-    gpioTerminate();
+    if(_ready_gpio) gpioTerminate();
+    if(_ready_i2c) {
+        i2cClose(_i2c_handle);
+        _ready_i2c = false;
+    }
 }
 
 bool CControlPi::init_gpio(const std::vector<int> &input_pins, std::vector<int> &output_pins) {
