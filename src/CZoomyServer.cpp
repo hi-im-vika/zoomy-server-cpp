@@ -13,7 +13,6 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
     _port = port;
 
     // pigpio init
-    _raw_values = _values = std::vector<int>(8,0);
 
     if (!_control.init_gpio(_input_pins, _output_pins)) {
         spdlog::error("Error during GPIO init.");
@@ -87,11 +86,6 @@ void CZoomyServer::update() {
 }
 
 void CZoomyServer::draw() {
-    std::stringstream ss;
-    for (auto &i : _values) {
-        ss << i << " ";
-    }
-    spdlog::info(ss.str());
 
     int converted = (int) ( ((float) _control.get_gc_values().at(GC_LEFTY) / 32768.0) * 4095);
     converted = (abs(converted) > 100 ? converted : 0);
