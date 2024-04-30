@@ -93,7 +93,7 @@ void CZoomyServer::draw() {
     _control.pca9685_motor_control(CControlPi::motor::M_NW, converted);
     _control.pca9685_motor_control(CControlPi::motor::M_SE, converted);
     _control.pca9685_motor_control(CControlPi::motor::M_SW, converted);
-    spdlog::info("{:d}",converted);
+//    spdlog::info("{:d}",converted);
 
     std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
 
