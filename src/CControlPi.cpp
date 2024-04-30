@@ -20,6 +20,8 @@ CControlPi::CControlPi() {
 }
 
 CControlPi::~CControlPi() {
+    _do_exit = true;
+    if (_thread_process_gc.joinable()) _thread_process_gc.join();
     zap_com();
 }
 
