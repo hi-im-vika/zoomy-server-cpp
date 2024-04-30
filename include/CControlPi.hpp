@@ -43,9 +43,11 @@ public:
     ~CControlPi() = default;
     bool init_gpio(const std::vector<int> &input_pins, std::vector<int> &output_pins);
     bool init_i2c(i2c_ch ch, uint address);
-//    bool get_data(data_type type, int channel, int &result);
-//    bool set_data(data_type type, int channel, int val);
-//    bool servo_talker(CControlPi::data_op op, int channel, int set_val, int &result);
-//    bool code_talker(adc_channel ch, int &result);
     void zap_com();
+
+    bool i2c_write_byte(uint reg, uint val);
+    bool i2c_read_byte(uint reg, uint8_t &data);
+    bool i2c_write_block(uint reg, std::vector<char> &buf);
+    bool i2c_write_word(uint reg, uint word);
+
 };

@@ -65,6 +65,42 @@ bool CControlPi::init_i2c(i2c_ch ch, uint address) {
     return _ready_i2c;
 }
 
+
+bool CControlPi::i2c_write_byte(uint reg, uint val) {
+    if (!_ready_i2c) return false;
+    if(i2cWriteByteData(_i2c_handle,reg,val) != 0) {
+        return false;
+    }
+    return true;
+}
+
+bool CControlPi::i2c_read_byte(uint reg, uint8_t &data) {
+    if (!_ready_i2c) return false;
+    uint8_t raw_data = i2cReadByteData(_i2c_handle,reg);
+    if(raw_data < 0) {
+        return false;
+    }
+    data = raw_data;
+    return true;
+}
+
+bool CControlPi::i2c_write_block(uint reg, std::vector<char> &buf) {
+    if (!_ready_i2c) return false;
+    if(i2cWriteI2CBlockData(_i2c_handle,reg,buf.data(), buf.size()) != 0) {
+        return false;
+    }
+    return true;
+}
+
+bool CControlPi::i2c_write_word(uint reg, uint word) {
+    if (!_ready_i2c) return false;
+    if(i2cWriteWordData(_i2c_handle,reg,word) != 0) {
+        return false;
+    }
+    return true;
+}
+
+
 //bool CControlPi::get_data(data_type type, int channel, int &result) {
 //    switch (type) {
 //        case data_type::ANALOG:
