@@ -100,21 +100,13 @@ void CZoomyServer::draw() {
     }
     spdlog::info(ss.str());
 
-//    // DEBUG: cycle between 0% and 100% duty cycle for PWM motor control
-//    for (int duty = 0; duty < 255; duty++) {
-//        gpioPWM(gpio_pins::MOTOR_NW, 0 + duty);
-//        gpioPWM(gpio_pins::MOTOR_NE, 0 + duty);
-//        gpioPWM(gpio_pins::MOTOR_SW, 0 + duty);
-//        gpioPWM(gpio_pins::MOTOR_SE, 0 + duty);
-//        std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
-//    }
-//    for (int duty = 0; duty < 255; duty++) {
-//        gpioPWM(gpio_pins::MOTOR_NW, 255 - duty);
-//        gpioPWM(gpio_pins::MOTOR_NE, 255 - duty);
-//        gpioPWM(gpio_pins::MOTOR_SW, 255 - duty);
-//        gpioPWM(gpio_pins::MOTOR_SE, 255 - duty);
-//        std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
-//    }
+    int converted = (int) ( ((float) _values.at(GC_LEFTY) / 32768.0) * 4095);
+    converted = (abs(converted) > 100 ? converted : 0);
+    _control.pca9685_motor_control(CControlPi::motor::M_NE, converted);
+    _control.pca9685_motor_control(CControlPi::motor::M_NW, converted);
+    _control.pca9685_motor_control(CControlPi::motor::M_SE, converted);
+    _control.pca9685_motor_control(CControlPi::motor::M_SW, converted);
+    spdlog::info("{:d}",converted);
 
     std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
 }
