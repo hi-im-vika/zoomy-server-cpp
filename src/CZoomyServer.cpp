@@ -109,6 +109,40 @@ void CZoomyServer::draw() {
     spdlog::info("{:d}",converted);
 
     std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
+
+//    // DEBUG: motor test pattern
+//    _control.pca9685_motor_control(CControlPi::motor::M_NE, 4095);
+//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
+//    _control.pca9685_motor_control(CControlPi::motor::M_NW, 4095);
+//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
+//    _control.pca9685_motor_control(CControlPi::motor::M_SE, 4095);
+//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
+//    _control.pca9685_motor_control(CControlPi::motor::M_SW, 4095);
+//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
+//    _control.pca9685_motor_control(CControlPi::motor::M_NE, 0);
+//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
+//    _control.pca9685_motor_control(CControlPi::motor::M_NW, 0);
+//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
+//    _control.pca9685_motor_control(CControlPi::motor::M_SE, 0);
+//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
+//    _control.pca9685_motor_control(CControlPi::motor::M_SW, 0);
+//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
+//    _control.pca9685_motor_control(CControlPi::motor::M_NE, -4095);
+//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
+//    _control.pca9685_motor_control(CControlPi::motor::M_NW, -4095);
+//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
+//    _control.pca9685_motor_control(CControlPi::motor::M_SE, -4095);
+//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
+//    _control.pca9685_motor_control(CControlPi::motor::M_SW, -4095);
+//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
+//    _control.pca9685_motor_control(CControlPi::motor::M_NE, 0);
+//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
+//    _control.pca9685_motor_control(CControlPi::motor::M_NW, 0);
+//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
+//    _control.pca9685_motor_control(CControlPi::motor::M_SE, 0);
+//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
+//    _control.pca9685_motor_control(CControlPi::motor::M_SW, 0);
+//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
 }
 
 void CZoomyServer::rx() {
