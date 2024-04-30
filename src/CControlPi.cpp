@@ -54,9 +54,8 @@ bool CControlPi::init_gpio(const std::vector<int> &input_pins, std::vector<int> 
 }
 
 bool CControlPi::init_i2c(i2c_ch ch, uint address) {
-    int i2c_code = i2cOpen(ch, address, 0);
-    std::cout << i2c_code << std::endl;
-    if (i2c_code < 0) {
+    _i2c_handle = i2cOpen(ch, address, 0);
+    if (_i2c_handle < 0) {
         std::cout << "Error during I2C setup" << std::endl;
         _ready_i2c = false;
         return _ready_i2c;
