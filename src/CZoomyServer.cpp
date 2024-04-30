@@ -94,6 +94,11 @@ void CZoomyServer::update() {
 }
 
 void CZoomyServer::draw() {
+    std::stringstream ss;
+    for (auto &i : _values) {
+        ss << i << " ";
+    }
+    spdlog::info(ss.str());
 
 //    // DEBUG: cycle between 0% and 100% duty cycle for PWM motor control
 //    for (int duty = 0; duty < 255; duty++) {
