@@ -65,6 +65,90 @@ bool CControlPi::init_i2c(i2c_ch ch, uint address) {
     return _ready_i2c;
 }
 
+bool CControlPi::init_pca9685(i2c_ch ch, uint address) {
+    if (!_ready_i2c) {
+        if (!init_i2c(ch, address)) {
+            return false;
+        }
+    }
+
+    i2c_write_byte(0x00, 0x30);
+    i2c_write_byte(0xFE, 0x1E);
+    i2c_write_byte(0x00, 0x20);
+    i2c_write_byte(0x00, 0xA0);
+
+    uint8_t data = 0;
+    i2c_read_byte(0x00, data);
+
+    _ready_pca9685 = (data == 0x20);
+    return _ready_pca9685;
+}
+
+void CControlPi::pca9685_motor_control(motor m, int value) {
+    if (!_ready_pca9685) return;
+    int absolute = abs(value);
+    if (absolute > 0x0FFF) return;
+    if (!value) {
+        switch (m) {
+            case M_NE:
+                i2c_write_word(CControlPi::motor_regs::MREG_NE_F, 0x0000);
+                i2c_write_word(CControlPi::motor_regs::MREG_NE_B, 0x0000);
+                break;
+            case M_NW:
+                i2c_write_word(CControlPi::motor_regs::MREG_NW_F, 0x0000);
+                i2c_write_word(CControlPi::motor_regs::MREG_NW_B, 0x0000);
+                break;
+            case M_SE:
+                i2c_write_word(CControlPi::motor_regs::MREG_SE_F, 0x0000);
+                i2c_write_word(CControlPi::motor_regs::MREG_SE_B, 0x0000);
+                break;
+            case M_SW:
+                i2c_write_word(CControlPi::motor_regs::MREG_SW_F, 0x0000);
+                i2c_write_word(CControlPi::motor_regs::MREG_SW_B, 0x0000);
+                break;
+            default:
+                break;
+        }
+        return;
+    }
+    if (value > 0) {
+        switch (m) {
+            case M_NE:
+                i2c_write_word(CControlPi::motor_regs::MREG_NE_F, absolute);
+                break;
+            case M_NW:
+                i2c_write_word(CControlPi::motor_regs::MREG_NW_F, absolute);
+                break;
+            case M_SE:
+                i2c_write_word(CControlPi::motor_regs::MREG_SE_F, absolute);
+                break;
+            case M_SW:
+                i2c_write_word(CControlPi::motor_regs::MREG_SW_F, absolute);
+                break;
+            default:
+                break;
+        }
+        return;
+    } else {
+        switch (m) {
+            case M_NE:
+                i2c_write_word(CControlPi::motor_regs::MREG_NE_B, absolute);
+                break;
+            case M_NW:
+                i2c_write_word(CControlPi::motor_regs::MREG_NW_B, absolute);
+                break;
+            case M_SE:
+                i2c_write_word(CControlPi::motor_regs::MREG_SE_B, absolute);
+                break;
+            case M_SW:
+                i2c_write_word(CControlPi::motor_regs::MREG_SW_B, absolute);
+                break;
+            default:
+                break;
+        }
+        return;
+    }
+}
 
 bool CControlPi::i2c_write_byte(uint reg, uint val) {
     if (!_ready_i2c) return false;
