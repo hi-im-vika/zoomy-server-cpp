@@ -8,7 +8,7 @@
 
 #define PING_TIMEOUT 1000
 #define NET_DELAY 1
-#define DEADZONE 0.05
+#define DEADZONE 2048
 
 CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
     _port = port;
@@ -25,6 +25,7 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
         exit(-1);
     }
 
+    _joystickA = _joystickB = {0, 0};
     // net init
     _timeout_count = std::chrono::steady_clock::now();
     _time_since_start = 0;
@@ -87,40 +88,13 @@ void CZoomyServer::update() {
 }
 
 void CZoomyServer::draw() {
-    /* TANK MOVEMENT TEMP
-    std::vector<int> gc = _control.get_gc_values();
-    if ((gc[0] * gc[0] + gc[1] * gc[1]) > (DEADZONE * 1073741824)) {
-        _control.pca9685_motor_control(CControlPi::M_NW, -gc[1] / 8);
-        _control.pca9685_motor_control(CControlPi::M_SW, -gc[1] / 8);
+    if (hypot(_values[0], _values[1]) > DEADZONE) {
+        _joystickA = {_values[0], _values[1]};
     }
-    else {
-        _control.pca9685_motor_control(CControlPi::M_NW, 0);
-        _control.pca9685_motor_control(CControlPi::M_SW, 0);
+    if (hypot(_values[2], _values[3]) > DEADZONE) {
+        _joystickB = {_values[2], _values[3]};
     }
-    if ((gc[2] * gc[2] + gc[3] * gc[3]) > (DEADZONE * 1073741824)) {
-        _control.pca9685_motor_control(CControlPi::M_NE, -gc[3] / 8);
-        _control.pca9685_motor_control(CControlPi::M_SE, -gc[3] / 8);
-    }
-    else {
-        _control.pca9685_motor_control(CControlPi::M_NE, 0);
-        _control.pca9685_motor_control(CControlPi::M_SE, 0);
-    }
-     */
-    std::vector<int> gc = _control.get_gc_values();
-    float speed = hypot(gc[0] / 8.0, gc[1] / 8.0);
-    float theta = atan2(-gc[0], -gc[1]);
-    if ((speed > (DEADZONE * 4096.0)) || (gc[2] * gc[2] + gc[3] * gc[3]) > (DEADZONE * 1073741824)) {
-        _control.pca9685_motor_control(CControlPi::M_NW, (speed * (cos(theta) + sin(theta)) + (gc[2] / 8.0)) / 5);
-        _control.pca9685_motor_control(CControlPi::M_SW, (speed * (cos(theta) - sin(theta)) + (gc[2] / 8.0)) / 5);
-        _control.pca9685_motor_control(CControlPi::M_NE, (speed * (cos(theta) - sin(theta)) - (gc[2] / 8.0)) / 5);
-        _control.pca9685_motor_control(CControlPi::M_SE, (speed * (cos(theta) + sin(theta)) - (gc[2] / 8.0)) / 5);
-    }
-    else {
-        _control.pca9685_motor_control(CControlPi::M_NW, 0);
-        _control.pca9685_motor_control(CControlPi::M_SW, 0);
-        _control.pca9685_motor_control(CControlPi::M_NE, 0);
-        _control.pca9685_motor_control(CControlPi::M_SE, 0);
-    }
+    _mecanum.moveOmni(_joystickA[0], _values[2]);
 /*
     int converted = (int) ( ((float) _control.get_gc_values().at(GC_LEFTY) / 32768.0) * 4095);
     converted = (abs(converted) > 100 ? converted : 0);

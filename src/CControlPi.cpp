@@ -123,15 +123,19 @@ void CControlPi::pca9685_motor_control(motor m, int value) {
         switch (m) {
             case M_NE:
                 i2c_write_word(CControlPi::motor_regs::MREG_NE_F, absolute);
+                i2c_write_word(CControlPi::motor_regs::MREG_NE_B, 0x0000);
                 break;
             case M_NW:
                 i2c_write_word(CControlPi::motor_regs::MREG_NW_F, absolute);
+                i2c_write_word(CControlPi::motor_regs::MREG_NW_B, 0x0000);
                 break;
             case M_SE:
                 i2c_write_word(CControlPi::motor_regs::MREG_SE_F, absolute);
+                i2c_write_word(CControlPi::motor_regs::MREG_SE_B, 0x0000);
                 break;
             case M_SW:
                 i2c_write_word(CControlPi::motor_regs::MREG_SW_F, absolute);
+                i2c_write_word(CControlPi::motor_regs::MREG_SW_B, 0x0000);
                 break;
             default:
                 break;
@@ -141,15 +145,19 @@ void CControlPi::pca9685_motor_control(motor m, int value) {
         switch (m) {
             case M_NE:
                 i2c_write_word(CControlPi::motor_regs::MREG_NE_B, absolute);
+                i2c_write_word(CControlPi::motor_regs::MREG_NE_F, 0x0000);
                 break;
             case M_NW:
                 i2c_write_word(CControlPi::motor_regs::MREG_NW_B, absolute);
+                i2c_write_word(CControlPi::motor_regs::MREG_NW_F, 0x0000);
                 break;
             case M_SE:
                 i2c_write_word(CControlPi::motor_regs::MREG_SE_B, absolute);
+                i2c_write_word(CControlPi::motor_regs::MREG_SE_F, 0x0000);
                 break;
             case M_SW:
                 i2c_write_word(CControlPi::motor_regs::MREG_SW_B, absolute);
+                i2c_write_word(CControlPi::motor_regs::MREG_SW_F, 0x0000);
                 break;
             default:
                 break;

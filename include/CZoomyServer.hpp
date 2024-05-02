@@ -7,10 +7,12 @@
 #pragma once
 
 #include <iostream>
+#include <math.h>
 #include <spdlog/fmt/fmt.h>
 #include <CUDPServer.hpp>
 #include "CCommonBase.hpp"
 #include "CControlPi.hpp"
+#include "CMecanumMove.hpp"
 
 enum value_type {
     GC_LEFTX,
@@ -31,6 +33,9 @@ enum devices {
 
 class CZoomyServer : public CCommonBase {
 private:
+    //movement
+    std::vector<int> _joystickA, _joystickB;
+    CMecanumMove _mecanum;
 
     // net
     std::string _port;

@@ -3,27 +3,44 @@
 //
 #pragma once
 #include <opencv2/opencv.hpp>
+#include <chrono>
+#include <math.h>
+#include "CControlPi.hpp"
 
-enum mode{tank = 0, normal, sport};
+enum wheel{NW = 0, NE, SW, SE};
+enum mode{ECO = 0, NORMAL, SPORT};
+enum relation{GLOBAL = 0, RELATIVE};
 // todo doxygen
 class CMecanumMove {
 private:
-    cv::Point3f _acceleration;
+    CControlPi _control;
 
-    cv::Point3f _velocity;
+    float _speedModifier;
+
+    std::vector<int> _wheelSpeed;
+
+    std::vector<int> _wheelVel;
+
+    std::chrono::steady_clock::time_point _deltaTime;
+
+    unsigned int _mode;
+
+    bool _relation;
 
     bool _threadExit;
 
-    static void moveThread();
+    static void moveThread(CMecanumMove* ptr);
+
+    void driveControl();
 
 public:
-    CMecanumMove();
+    CMecanumMove(unsigned int mode = 2, bool relation = GLOBAL);
 
     ~CMecanumMove();
 
-    void setAcceleration(cv::Point3f acceleration);
+    void moveOmni(int x = 0, int y = 0, int r = 0);
 
-    void setVelocity(cv::Point3f velocity);
+    void moveTank(int l = 0, int r = 0);
 
-    void move();
+    void setRelation(bool relation);
 };
