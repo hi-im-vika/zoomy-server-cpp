@@ -101,18 +101,17 @@ void CZoomyServer::draw() {
     if (hypot(local_values[0], local_values[1]) > DEADZONE) {
         _joystickA = {local_values[0], local_values[1]};
     }
+    else {
+        _joystickA = {0, 0};
+    }
     if (hypot(local_values[2], local_values[3]) > DEADZONE) {
         _joystickB = {local_values[2], local_values[3]};
     }
-    _mecanum.moveOmni(_joystickA[0], local_values[2]);
-/*
-    int converted = (int) ( ((float) _control.get_gc_values().at(GC_LEFTY) / 32768.0) * 4095);
-    converted = (abs(converted) > 100 ? converted : 0);
-    _control.pca9685_motor_control(CControlPi::motor::M_NE, converted);
-    _control.pca9685_motor_control(CControlPi::motor::M_NW, converted);
-    _control.pca9685_motor_control(CControlPi::motor::M_SE, converted);
-    _control.pca9685_motor_control(CControlPi::motor::M_SW, converted); */
-//    spdlog::info("{:d}",converted);
+    else {
+        _joystickB = {0, 0};
+    }
+    _mecanum.moveOmni(_joystickA[0], _joystickA[1], _joystickB[0]);
+    //_mecanum.moveTank(_joystickB[1], _joystickA[1]);
 
     std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
 }
