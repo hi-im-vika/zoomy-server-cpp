@@ -31,9 +31,9 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
     }
 
     _joystickA = _joystickB = {0, 0};
+
     // net init
     _timeout_count = std::chrono::steady_clock::now();
-    _time_since_start = 0;
 
     _server.setup(_port);
 
@@ -60,6 +60,13 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
 }
 
 CZoomyServer::~CZoomyServer() {
+    deinit();
+}
+
+void CZoomyServer::deinit() {
+    _do_exit = true;
+    if (_thread_rx.joinable()) _thread_rx.join();
+    if (_thread_tx.joinable()) _thread_tx.join();
     _control.zap_com();
 }
 
@@ -72,7 +79,8 @@ void CZoomyServer::update() {
 
         // process received control values
         std::string as_string(std::string(_rx_queue.front().begin(),_rx_queue.front().end()));
-        //spdlog::info("Received: " + as_string);
+
+        // only process data if not ping
         if (as_string != "\005") {
             _control.queue_new_gc_data(as_string);
         }
@@ -81,15 +89,11 @@ void CZoomyServer::update() {
         cv::imencode(".jpg", smaller, encoded);
 
         std::string payload("test");
-        // echo client data back to client
-//        _tx_queue.emplace(std::string(encoded.begin, encoded);
         std::vector<uint8_t> tx_assembled(payload.begin(),payload.end());
         tx_assembled.insert(tx_assembled.end(),encoded.begin(),encoded.end());
         _tx_queue.emplace(tx_assembled);
     }
 
-    _time_since_start = (int) std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - _timeout_count).count();
-//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(NET_DELAY));
 }
 
 void CZoomyServer::draw() {
@@ -111,40 +115,6 @@ void CZoomyServer::draw() {
 //    spdlog::info("{:d}",converted);
 
     std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
-
-//    // DEBUG: motor test pattern
-//    _control.pca9685_motor_control(CControlPi::motor::M_NE, 4095);
-//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
-//    _control.pca9685_motor_control(CControlPi::motor::M_NW, 4095);
-//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
-//    _control.pca9685_motor_control(CControlPi::motor::M_SE, 4095);
-//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
-//    _control.pca9685_motor_control(CControlPi::motor::M_SW, 4095);
-//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
-//    _control.pca9685_motor_control(CControlPi::motor::M_NE, 0);
-//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
-//    _control.pca9685_motor_control(CControlPi::motor::M_NW, 0);
-//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
-//    _control.pca9685_motor_control(CControlPi::motor::M_SE, 0);
-//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
-//    _control.pca9685_motor_control(CControlPi::motor::M_SW, 0);
-//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
-//    _control.pca9685_motor_control(CControlPi::motor::M_NE, -4095);
-//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
-//    _control.pca9685_motor_control(CControlPi::motor::M_NW, -4095);
-//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
-//    _control.pca9685_motor_control(CControlPi::motor::M_SE, -4095);
-//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
-//    _control.pca9685_motor_control(CControlPi::motor::M_SW, -4095);
-//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
-//    _control.pca9685_motor_control(CControlPi::motor::M_NE, 0);
-//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
-//    _control.pca9685_motor_control(CControlPi::motor::M_NW, 0);
-//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
-//    _control.pca9685_motor_control(CControlPi::motor::M_SE, 0);
-//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
-//    _control.pca9685_motor_control(CControlPi::motor::M_SW, 0);
-//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(250));
 }
 
 void CZoomyServer::rx() {
@@ -159,7 +129,6 @@ void CZoomyServer::rx() {
 
 void CZoomyServer::tx() {
     for (; !_tx_queue.empty(); _tx_queue.pop()) {
-//            spdlog::info("Sending");
         _server.do_tx(_tx_queue.front(),_client);
     }
     std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(NET_DELAY));
@@ -178,6 +147,7 @@ void CZoomyServer::thread_tx(CZoomyServer *who_called) {
 }
 
 int main(int argc, char *argv[]) {
+
     if (argc != 3) {
         std::cerr << "Usage: server <port> <gstreamer string>" << std::endl;
         return 1;
