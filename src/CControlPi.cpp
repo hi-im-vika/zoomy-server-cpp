@@ -230,6 +230,17 @@ void CControlPi::pca9685_motor_control(motor m, int value) {
     }
 }
 
+bool CControlPi::hmc5883l_raw_data(std::vector<char> &data) {
+    if (!_ready_hmc5883l) {
+        spdlog::error("Device not ready.");
+        return false;
+    }
+    if (!i2c_read_block(_ch_hmc5883l,0x03,data,6)) {
+        return false;
+    }
+    return true;
+}
+
 void CControlPi::queue_new_gc_data(std::string &data) {
     _gc_queue.emplace(data);
 }
