@@ -81,15 +81,29 @@ bool CControlPi::init_gpio(const std::vector<int> &input_pins, std::vector<int> 
 }
 
 bool CControlPi::init_i2c(i2c_ch ch, uint address) {
-    _i2c_handle = i2cOpen(ch, address, 0);
-    if (_i2c_handle < 0) {
+    int *temp_handle;
+    bool *temp_status;
+    switch(ch) {
+        case i2c_ch::CH0:
+            temp_handle = &_i2c_handle_ch0;
+            temp_status = &_ready_i2c_ch0;
+            break;
+        case i2c_ch::CH1:
+            temp_handle = &_i2c_handle_ch1;
+            temp_status = &_ready_i2c_ch1;
+            break;
+        default:
+            return false;
+    }
+    *temp_handle = i2cOpen(ch, address, 0);
+    if (*temp_handle < 0) {
         std::cout << "Error during I2C setup" << std::endl;
-        _ready_i2c = false;
-        return _ready_i2c;
+        *temp_status = false;
+        return *temp_status;
     }
     std::cout << "I2C setup with peripheral address 0x" << std::hex << address << std::endl;
-    _ready_i2c = true;
-    return _ready_i2c;
+    *temp_status = true;
+    return *temp_status;
 }
 
 bool CControlPi::init_pca9685(i2c_ch ch, uint address) {
