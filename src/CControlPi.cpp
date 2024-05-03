@@ -21,12 +21,12 @@ CControlPi::CControlPi() {
 }
 
 CControlPi::~CControlPi() {
-    _do_exit = true;
-    if (_thread_process_gc.joinable()) _thread_process_gc.join();
     zap_com();
 }
 
 void CControlPi::zap_com() {
+    _do_exit = true;
+    if (_thread_process_gc.joinable()) _thread_process_gc.join();
     if(_ready_gpio) gpioTerminate();
     if(_ready_i2c) {
         i2cClose(_i2c_handle);
