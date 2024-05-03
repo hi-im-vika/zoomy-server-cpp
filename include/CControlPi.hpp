@@ -26,6 +26,23 @@
  * @author vika
  */
 class CControlPi {
+public:
+
+    enum motor {
+        M_NE,
+        M_NW,
+        M_SE,
+        M_SW
+    };
+    enum i2c_ch {
+        CH0 = 0,
+        CH1 = 1
+    };
+    enum i2c_devices {
+        ADDR_DEFAULT_PCA9685 = 0x40,
+        ADDR_DEFAULT_HMC5883L = 0x1E
+    };
+
 private:
     enum motor_regs {
         MREG_NE_F = 0x08,
@@ -57,19 +74,6 @@ private:
     bool _ready_gpio;
 
 public:
-    enum motor {
-        M_NE,
-        M_NW,
-        M_SE,
-        M_SW
-    };
-    enum i2c_ch {
-        CH0 = 0,
-        CH1 = 1
-    };
-    enum i2c_devices {
-        ADDR_DEFAULT_PCA9685 = 0x40
-    };
 
     CControlPi();
     ~CControlPi();
