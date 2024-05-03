@@ -94,7 +94,10 @@ bool CControlPi::init_pca9685(i2c_ch ch, uint address) {
 }
 
 void CControlPi::pca9685_motor_control(motor m, int value) {
-    if (!_ready_pca9685) return;
+    if (!_ready_pca9685) {
+        spdlog::error("I2C not ready.");
+        return;
+    }
     int absolute = abs(value);
     if (absolute > 0x0FFF) return;
     if (!value) {
