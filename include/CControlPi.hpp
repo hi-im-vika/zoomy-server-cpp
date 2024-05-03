@@ -44,6 +44,7 @@ public:
     };
 
 private:
+
     enum motor_regs {
         MREG_NE_F = 0x08,
         MREG_NE_B = 0x0C,
