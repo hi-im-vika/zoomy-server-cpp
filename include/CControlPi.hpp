@@ -91,7 +91,7 @@ private:
     i2c_ch _ch_hmc5883l;        ///< HMC5883L I2C channel on the Raspberry Pi.
 
     // gpio setup
-    bool _ready_gpio;
+    bool _ready_gpio;           ///< GPIO initialization status.
 
 public:
 
