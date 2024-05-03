@@ -14,7 +14,6 @@ CMecanumMove::~CMecanumMove() {
 
 bool CMecanumMove::init(CControlPi* control, float speedModifier, bool relation) {
     _control = control;
-    _mode = mode;
     _relation = relation;
     _speedModifier = speedModifier / 8.0;
     _wheelSpeed = {0, 0, 0, 0};
@@ -36,6 +35,9 @@ void CMecanumMove::moveThread(CMecanumMove* ptr) {
 }
 
 void CMecanumMove::driveControl() {
+    if (_relation) {
+        // todo relative motion controls
+    }
     int delta = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - _deltaTime).count();
     _deltaTime = std::chrono::steady_clock::now();
     for (int i = 0; i < _wheelSpeed.size(); i++) {
