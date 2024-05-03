@@ -60,7 +60,7 @@ void CMecanumMove::driveControl() {
 }
 
 void CMecanumMove::moveOmni(int x, int y, int r) {
-    unsigned int speed = _speedModifier * hypot(x, y);
+    unsigned int speed = _speedModifier * hypot(x / 8.0, y / 8.0);
     float theta = atan2(-x, -y);
     int rotation = _speedModifier * r / 16;
     _wheelSpeed[NW] = (speed * (cos(theta) - sin(theta)) + rotation);
