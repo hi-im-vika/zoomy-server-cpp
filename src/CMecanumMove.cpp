@@ -47,19 +47,19 @@ void CMecanumMove::driveControl() {
 }
 
 void CMecanumMove::moveOmni(int x, int y, int r) {
-    unsigned int speed = _speedModifier * hypot(x / 8.0, y / 8.0);
+    unsigned int speed = _speedModifier * hypot(x, y);
     float theta = atan2(-x, -y);
-    int rotation = _speedModifier * r / 16;
-    _wheelSpeed[NW] = (speed * (cos(theta) - sin(theta)) + rotation);
-    _wheelSpeed[SW] = (speed * (cos(theta) + sin(theta)) + rotation);
-    _wheelSpeed[NE] = (speed * (cos(theta) + sin(theta)) - rotation);
-    _wheelSpeed[SE] = (speed * (cos(theta) - sin(theta)) - rotation);
+    int rotation = _speedModifier * r / 2.0;
+    _wheelSpeed[NW] = speed * (cos(theta) - sin(theta)) - rotation;
+    _wheelSpeed[SW] = speed * (cos(theta) + sin(theta)) - rotation;
+    _wheelSpeed[NE] = speed * (cos(theta) + sin(theta)) + rotation;
+    _wheelSpeed[SE] = speed * (cos(theta) - sin(theta)) + rotation;
 }
 
 void CMecanumMove::moveTank(int l, int r) {
-    _wheelSpeed[NW] = l * _speedModifier;
+    _wheelSpeed[NW] = -l * _speedModifier;
     _wheelSpeed[SW] = _wheelSpeed[NW];
-    _wheelSpeed[NE] = r * _speedModifier;
+    _wheelSpeed[NE] = -r * _speedModifier;
     _wheelSpeed[SE] = _wheelSpeed[NE];
 }
 
