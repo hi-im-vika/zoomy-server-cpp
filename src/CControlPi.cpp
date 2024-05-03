@@ -4,6 +4,7 @@
  * vika <https://github.com/hi-im-vika>
  */
 
+#include <spdlog/spdlog.h>
 #include "../include/CControlPi.hpp"
 
 // TODO: initialize compass/orientation sensor
