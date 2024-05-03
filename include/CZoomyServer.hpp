@@ -50,7 +50,6 @@ private:
 
     // pigpio
     std::vector<int> _input_pins, _output_pins;
-    std::vector<int> _raw_values, _values;
     CControlPi _control;
 
     // OpenCV
