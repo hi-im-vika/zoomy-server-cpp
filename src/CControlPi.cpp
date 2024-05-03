@@ -107,21 +107,21 @@ bool CControlPi::init_i2c(i2c_ch ch, uint address) {
 }
 
 bool CControlPi::init_pca9685(i2c_ch ch, uint address) {
-    if (!_ready_i2c) {
-        if (!init_i2c(ch, address)) {
-            return false;
-        }
+    if (!init_i2c(ch, address)) {
+        return false;
     }
 
-    i2c_write_byte(0x00, 0x30);
-    i2c_write_byte(0xFE, 0x1E);
-    i2c_write_byte(0x00, 0x20);
-    i2c_write_byte(0x00, 0xA0);
+    i2c_write_byte(ch, 0x00, 0x30);
+    i2c_write_byte(ch, 0xFE, 0x1E);
+    i2c_write_byte(ch, 0x00, 0x20);
+    i2c_write_byte(ch, 0x00, 0xA0);
 
     uint8_t data = 0;
-    i2c_read_byte(0x00, data);
+    i2c_read_byte(ch, 0x00, data);
 
     _ready_pca9685 = (data == 0x20);
+    _handle_pca9685 = get_i2c_handle(ch);
+    _ch_pca9685 = ch;
     return _ready_pca9685;
 }
 
