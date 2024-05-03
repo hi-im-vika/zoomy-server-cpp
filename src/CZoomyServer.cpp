@@ -12,6 +12,7 @@
 
 CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
     _port = port;
+    _output_pins.push_back(pins::LAUNCHER);
 
     // pigpio init
 
@@ -124,7 +125,14 @@ void CZoomyServer::draw() {
     float z = 1.0 * ((_raw_cmps_values.at(4) << 24) | (_raw_cmps_values.at(5) << 16)) /256/256/1090;
     spdlog::info("Z: {:03.2f}", z);
 
-    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
+    // conform to OOP standards later!!
+    if(local_values.at(6)) {
+        gpioWrite(pins::LAUNCHER, PI_ON);
+    } else {
+        gpioWrite(pins::LAUNCHER, PI_OFF);
+    }
+
+    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(1));
 }
 
 void CZoomyServer::rx() {

@@ -31,6 +31,10 @@ enum devices {
     PCA9685 = 0x40
 };
 
+enum pins {
+    LAUNCHER = 4,
+};
+
 class CZoomyServer : public CCommonBase {
 private:
 
