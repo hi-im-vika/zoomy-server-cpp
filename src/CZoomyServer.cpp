@@ -93,13 +93,14 @@ void CZoomyServer::update() {
 }
 
 void CZoomyServer::draw() {
-    if (hypot(_values[0], _values[1]) > DEADZONE) {
-        _joystickA = {_values[0], _values[1]};
+    auto local_values = _control.get_gc_values();
+    if (hypot(local_values[0], local_values[1]) > DEADZONE) {
+        _joystickA = {local_values[0], local_values[1]};
     }
-    if (hypot(_values[2], _values[3]) > DEADZONE) {
-        _joystickB = {_values[2], _values[3]};
+    if (hypot(local_values[2], local_values[3]) > DEADZONE) {
+        _joystickB = {local_values[2], local_values[3]};
     }
-    _mecanum.moveOmni(_joystickA[0], _values[2]);
+    _mecanum.moveOmni(_joystickA[0], local_values[2]);
 /*
     int converted = (int) ( ((float) _control.get_gc_values().at(GC_LEFTY) / 32768.0) * 4095);
     converted = (abs(converted) > 100 ? converted : 0);
