@@ -42,9 +42,13 @@ void CControlPi::zap_com() {
     _do_exit = true;
     if (_thread_process_gc.joinable()) _thread_process_gc.join();
     if(_ready_gpio) gpioTerminate();
-    if(_ready_i2c) {
-        i2cClose(_i2c_handle);
-        _ready_i2c = false;
+    if(get_i2c_status(i2c_ch::CH0) || get_i2c_status(i2c_ch::CH1)) {
+        i2cClose(_i2c_handle_ch0);
+        i2cClose(_i2c_handle_ch1);
+        _ready_i2c_ch0 = false;
+        _ready_i2c_ch1 = false;
+        _ready_hmc5883l = false;
+        _ready_pca9685 = false;
     }
 }
 
