@@ -107,6 +107,7 @@ public:
     void zap_com();
 
     void pca9685_motor_control(motor m, int value);
+    bool hmc5883l_raw_data(std::vector<char> &data);
 
     void queue_new_gc_data(std::string &data);
 
