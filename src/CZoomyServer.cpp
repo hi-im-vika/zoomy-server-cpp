@@ -12,6 +12,7 @@
 
 CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
     _port = port;
+    _output_pins.push_back(pins::LAUNCHER);
 
     // pigpio init
 
@@ -105,6 +106,13 @@ void CZoomyServer::draw() {
         _joystickB = {local_values[2], local_values[3]};
     }
     _mecanum.moveOmni(_joystickA[0], local_values[2]);
+
+    // conform to OOP standards later!!
+    if(local_values.at(6)) {
+        gpioWrite(pins::LAUNCHER, PI_ON);
+    } else {
+        gpioWrite(pins::LAUNCHER, PI_OFF);
+    }
 /*
     int converted = (int) ( ((float) _control.get_gc_values().at(GC_LEFTY) / 32768.0) * 4095);
     converted = (abs(converted) > 100 ? converted : 0);
@@ -114,7 +122,7 @@ void CZoomyServer::draw() {
     _control.pca9685_motor_control(CControlPi::motor::M_SW, converted); */
 //    spdlog::info("{:d}",converted);
 
-    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(10));
+    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(1));
 }
 
 void CZoomyServer::rx() {
