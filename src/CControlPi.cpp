@@ -9,10 +9,24 @@
 
 // TODO: initialize compass/orientation sensor
 CControlPi::CControlPi() {
+
+    // gpio
     _ready_gpio = false;
-    _ready_i2c = false;
+
+    // i2c
+    _ready_i2c_ch0 = false;
+    _ready_i2c_ch1 = false;
+    _i2c_handle_ch0 = 0;
+    _i2c_handle_ch1 = 0;
+
+    // device-specific
     _ready_pca9685 = false;
-    _i2c_handle = 0;
+    _handle_pca9685 = nullptr;
+
+    _ready_hmc5883l = false;
+    _handle_hmc5883l = nullptr;
+
+    // game controller
     _gc_values = std::vector<int>(10, 0);
 
     // start send thread
