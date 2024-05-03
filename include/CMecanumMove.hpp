@@ -8,7 +8,6 @@
 #include "CControlPi.hpp"
 
 enum wheel{NW = 0, NE, SW, SE};
-enum mode{ECO = 0, NORMAL, SPORT};
 enum relation{GLOBAL = 0, RELATIVE};
 // todo doxygen
 class CMecanumMove {
@@ -23,8 +22,6 @@ private:
 
     std::chrono::steady_clock::time_point _deltaTime;
 
-    unsigned int _mode;
-
     bool _relation;
 
     bool _threadExit;
@@ -38,7 +35,7 @@ public:
 
     ~CMecanumMove();
 
-    bool init(CControlPi* control, unsigned int mode = 2, bool relation = GLOBAL);
+    bool init(CControlPi* control, float speedModifier = 0.5, bool relation = GLOBAL);
 
     void moveOmni(int x = 0, int y = 0, int r = 0);
 
