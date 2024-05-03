@@ -125,6 +125,34 @@ bool CControlPi::init_pca9685(i2c_ch ch, uint address) {
     return _ready_pca9685;
 }
 
+bool CControlPi::init_hmc5883l(i2c_ch ch, uint address) {
+    if (!init_i2c(ch, address)) {
+        return false;
+    }
+
+    std::vector<char> buffer(3,'\1');
+
+    if(!i2c_read_block(ch, 0x0A, buffer, (int) buffer.size())) {
+        spdlog::error("Error during ID read");
+        return false;
+    }
+
+    if (buffer.at(0) != 0x48 || buffer.at(1) != 0x34 || buffer.at(2) != 0x33) {
+        spdlog::error("Device ID mismatch.");
+        return false;
+    }
+
+    if(!i2c_write_byte(ch, 0x02,0) != 0) {
+        spdlog::error("Mode set error.");
+        return false;
+    }
+
+    _ready_hmc5883l = !(buffer.at(0) != 0x48 || buffer.at(1) != 0x34 || buffer.at(2) != 0x33);
+    _handle_hmc5883l = get_i2c_handle(ch);
+    _ch_hmc5883l = ch;
+    return _ready_hmc5883l;
+}
+
 void CControlPi::pca9685_motor_control(motor m, int value) {
     if (!_ready_pca9685) {
         spdlog::error("I2C not ready.");
