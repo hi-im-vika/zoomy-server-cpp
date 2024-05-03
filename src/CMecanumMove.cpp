@@ -4,7 +4,7 @@
 
 #include "../include/CMecanumMove.hpp"
 
-#define ACCELERATION 0.2
+#define ACCELERATION 0.0175
 
 CMecanumMove::CMecanumMove() = default;
 
@@ -12,29 +12,14 @@ CMecanumMove::~CMecanumMove() {
     _threadExit = true;
 }
 
-bool CMecanumMove::init(CControlPi* control, unsigned int mode, bool relation) {
+bool CMecanumMove::init(CControlPi* control, float speedModifier, bool relation) {
     _control = control;
     _mode = mode;
     _relation = relation;
+    _speedModifier = speedModifier / 8.0;
     _wheelSpeed = {0, 0, 0, 0};
     _wheelVel = {0, 0, 0, 0};
     _deltaTime = std::chrono::steady_clock::now();
-
-    switch (_mode) {
-        case ECO:
-            _speedModifier = 0.2;
-            break;
-        case NORMAL:
-            _speedModifier = 0.5;
-            break;
-        case SPORT:
-            _speedModifier = 1.0;
-            break;
-        default:
-            // how did you get here??
-            return false;
-            break;
-    }
 
     _threadExit = false;
     std::thread t1(&CMecanumMove::moveThread, this);
