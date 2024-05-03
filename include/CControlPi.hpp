@@ -66,9 +66,29 @@ private:
     static void thread_process_gc(CControlPi *who_called);
 
     // i2c setup
-    bool _ready_i2c;
-    int _i2c_handle;
-    bool _ready_pca9685;
+    bool _ready_i2c_ch0;
+    bool _ready_i2c_ch1;
+    int _i2c_handle_ch0;
+    int _i2c_handle_ch1;
+
+    int* get_i2c_handle(i2c_ch ch);
+    bool get_i2c_status(i2c_ch ch);
+    bool i2c_write_byte(i2c_ch ch, uint reg, uint val);
+    bool i2c_write_block(i2c_ch ch, uint reg, std::vector<char> &buf);
+    bool i2c_write_word(i2c_ch ch, uint reg, uint word);
+
+    bool i2c_read_byte(i2c_ch ch, uint reg, uint8_t &data);
+    bool i2c_read_block(i2c_ch ch, uint reg, std::vector<char> &buf, int bytes);
+
+    // i2c device specific
+    // TODO: bundle into struct later
+    bool _ready_pca9685;        ///< PCA9685 initialization status.
+    int* _handle_pca9685;       ///< PCA9685 I2C handle pointer.
+    i2c_ch _ch_pca9685;         ///< PCA9685 I2C channel on the Raspberry Pi.
+
+    bool _ready_hmc5883l;       ///< HMC5883L initialization status.
+    int* _handle_hmc5883l;      ///< HMC5883L I2C handle pointer.
+    i2c_ch _ch_hmc5883l;        ///< HMC5883L I2C channel on the Raspberry Pi.
 
     // gpio setup
     bool _ready_gpio;
