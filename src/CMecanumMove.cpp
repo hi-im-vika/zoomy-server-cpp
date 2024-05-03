@@ -23,18 +23,24 @@ bool CMecanumMove::init(CControlPi* control, unsigned int mode, bool relation) {
     switch (_mode) {
         case ECO:
             _speedModifier = 0.2;
+            break;
         case NORMAL:
             _speedModifier = 0.5;
             break;
         case SPORT:
             _speedModifier = 1.0;
             break;
+        default:
+            // how did you get here??
+            return false;
+            break;
     }
 
     _threadExit = false;
-
     std::thread t1(&CMecanumMove::moveThread, this);
     t1.detach();
+
+    return true;
 }
 
 void CMecanumMove::moveThread(CMecanumMove* ptr) {
