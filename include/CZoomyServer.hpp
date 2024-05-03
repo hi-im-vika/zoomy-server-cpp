@@ -34,9 +34,10 @@ enum devices {
 class CZoomyServer : public CCommonBase {
 private:
 
-    //movement
+    // movement
     std::vector<int> _joystickA, _joystickB;
     CMecanumMove _mecanum;
+    std::vector<char> _raw_cmps_values;
 
     // net
     std::string _port;
