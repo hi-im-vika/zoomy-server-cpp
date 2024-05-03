@@ -99,17 +99,16 @@ public:
     ~CControlPi();
 
     bool init_gpio(const std::vector<int> &input_pins, std::vector<int> &output_pins);
-    bool init_pca9685(i2c_ch ch, uint address = ADDR_DEFAULT_PCA9685);
     bool init_i2c(i2c_ch ch, uint address);
-    void zap_com();
 
-    bool i2c_write_byte(uint reg, uint val);
-    bool i2c_read_byte(uint reg, uint8_t &data);
-    bool i2c_write_block(uint reg, std::vector<char> &buf);
-    bool i2c_write_word(uint reg, uint word);
+    bool init_pca9685(i2c_ch ch, uint address = ADDR_DEFAULT_PCA9685);
+    bool init_hmc5883l(i2c_ch ch, uint address = ADDR_DEFAULT_HMC5883L);
+
+    void zap_com();
 
     void pca9685_motor_control(motor m, int value);
 
     void queue_new_gc_data(std::string &data);
+
     std::vector<int> get_gc_values();
 };
