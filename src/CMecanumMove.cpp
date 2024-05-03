@@ -6,7 +6,14 @@
 
 #define ACCELERATION 0.2
 
-CMecanumMove::CMecanumMove(unsigned int mode, bool relation) {
+CMecanumMove::CMecanumMove() = default;
+
+CMecanumMove::~CMecanumMove() {
+    _threadExit = true;
+}
+
+bool CMecanumMove::init(CControlPi* control, unsigned int mode, bool relation) {
+    _control = control;
     _mode = mode;
     _relation = relation;
     _wheelSpeed = {0, 0, 0, 0};
@@ -30,10 +37,6 @@ CMecanumMove::CMecanumMove(unsigned int mode, bool relation) {
     t1.detach();
 }
 
-CMecanumMove::~CMecanumMove() {
-    _threadExit = true;
-}
-
 void CMecanumMove::moveThread(CMecanumMove* ptr) {
     while (!ptr->_threadExit) {
         ptr -> driveControl();
@@ -46,7 +49,7 @@ void CMecanumMove::driveControl() {
     _deltaTime = std::chrono::steady_clock::now();
     for (int i = 0; i < _wheelSpeed.size(); i++) {
         _wheelVel[i] += (_wheelSpeed[i] - _wheelVel[i]) * ACCELERATION * delta;
-        _control.pca9685_motor_control(CControlPi::motor(i), _wheelVel[i]);
+        _control->pca9685_motor_control(CControlPi::motor(i), _wheelVel[i]);
     }
 }
 

@@ -13,7 +13,7 @@ enum relation{GLOBAL = 0, RELATIVE};
 // todo doxygen
 class CMecanumMove {
 private:
-    CControlPi _control;
+    CControlPi* _control;
 
     float _speedModifier;
 
@@ -34,9 +34,11 @@ private:
     void driveControl();
 
 public:
-    CMecanumMove(unsigned int mode = 2, bool relation = GLOBAL);
+    CMecanumMove();
 
     ~CMecanumMove();
+
+    bool init(CControlPi* control, unsigned int mode = 2, bool relation = GLOBAL);
 
     void moveOmni(int x = 0, int y = 0, int r = 0);
 

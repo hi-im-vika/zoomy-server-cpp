@@ -25,6 +25,11 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
         exit(-1);
     }
 
+    if (!_mecanum.init(&_control)) {
+        spdlog::error("Error during CMecanumMove init.");
+        exit(-1);
+    }
+
     _joystickA = _joystickB = {0, 0};
     // net init
     _timeout_count = std::chrono::steady_clock::now();
