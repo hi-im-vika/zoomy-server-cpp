@@ -265,7 +265,7 @@ void CControlPi::thread_process_gc(CControlPi *who_called) {
         for (; !who_called->_gc_queue.empty(); who_called->_gc_queue.pop()) {
             who_called->process_gc(who_called->_gc_queue.front());
         }
-//    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(NET_DELAY));
+    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(1));
     }
 }
 
