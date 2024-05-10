@@ -39,7 +39,7 @@ class CZoomyServer : public CCommonBase {
 private:
 
     // movement
-    std::vector<int> _joystickA, _joystickB;
+    std::vector<cv::Point> _joystick;
     CMecanumMove _mecanum;
     std::vector<char> _raw_cmps_values;
 

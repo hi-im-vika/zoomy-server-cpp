@@ -8,7 +8,6 @@
 
 #define PING_TIMEOUT 1000
 #define NET_DELAY 1
-#define DEADZONE 2048
 
 CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
     _port = port;
@@ -38,7 +37,7 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
         exit(-1);
     }
 
-    _joystickA = _joystickB = {0, 0};
+    _joystick = std::vector(2, cv::Point(0, 0));
 
     // net init
     _timeout_count = std::chrono::steady_clock::now();
@@ -105,28 +104,15 @@ void CZoomyServer::update() {
 }
 
 void CZoomyServer::draw() {
-    auto local_values = _control.get_gc_values();
-    if (hypot(local_values[0], local_values[1]) > DEADZONE) {
-        _joystickA = {local_values[0], local_values[1]};
-    }
-    else {
-        _joystickA = {0, 0};
-    }
-    if (hypot(local_values[2], local_values[3]) > DEADZONE) {
-        _joystickB = {local_values[2], local_values[3]};
-    }
-    else {
-        _joystickB = {0, 0};
-    }
-    _mecanum.moveOmni(_joystickA[0], _joystickA[1], _joystickB[0]);
-    //_mecanum.moveTank(_joystickB[1], _joystickA[1]);
+    _mecanum.moveOmni(-_joystick[1].x, _joystick[1].y, -_joystick[0].x);
+    //_mecanum.moveTank(_joystick[1].y _joystick[0].y);
 
     _control.hmc5883l_raw_data(_raw_cmps_values);
     float z = 1.0 * ((_raw_cmps_values.at(4) << 24) | (_raw_cmps_values.at(5) << 16)) /256/256/1090;
     spdlog::info("Z: {:03.2f}", z);
 
     // conform to OOP standards later!!
-    if(local_values.at(6)) {
+    if(_control.get_gc_values().at(6)) {
         gpioWrite(pins::LAUNCHER, PI_ON);
     } else {
         gpioWrite(pins::LAUNCHER, PI_OFF);
