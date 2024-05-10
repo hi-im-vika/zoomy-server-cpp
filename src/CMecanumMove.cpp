@@ -4,7 +4,7 @@
 
 #include "../include/CMecanumMove.hpp"
 
-#define ACCELERATION 0.0175
+#define ACCELERATION 0.02
 
 CMecanumMove::CMecanumMove() = default;
 
@@ -49,7 +49,7 @@ void CMecanumMove::driveControl() {
 void CMecanumMove::moveOmni(int x, int y, int r) {
     unsigned int speed = _speedModifier * hypot(x, y);
     float theta = atan2(-x, -y);
-    int rotation = _speedModifier * r / 2.0;
+    int rotation = _speedModifier * r *0.65;
     _wheelSpeed[NW] = speed * (cos(theta) - sin(theta)) - rotation;
     _wheelSpeed[SW] = speed * (cos(theta) + sin(theta)) - rotation;
     _wheelSpeed[NE] = speed * (cos(theta) + sin(theta)) + rotation;
