@@ -26,13 +26,6 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
         exit(-1);
     }
 
-    if (!_control.init_hmc5883l(CControlPi::i2c_ch::CH0)) {
-        spdlog::error("Error during HMC5883L init.");
-        exit(-1);
-    }
-
-    _raw_cmps_values = std::vector<char>(6,'\1');
-
     if (!_mecanum.init(&_control)) {
         spdlog::error("Error during CMecanumMove init.");
         exit(-1);
@@ -120,10 +113,6 @@ void CZoomyServer::draw() {
     }
     _mecanum.moveOmni(_joystickA[0], _joystickA[1], _joystickB[0]);
     //_mecanum.moveTank(_joystickB[1], _joystickA[1]);
-
-    _control.hmc5883l_raw_data(_raw_cmps_values);
-    float z = 1.0 * ((_raw_cmps_values.at(4) << 24) | (_raw_cmps_values.at(5) << 16)) /256/256/1090;
-    spdlog::info("Z: {:03.2f}", z);
 
     // conform to OOP standards later!!
     if(local_values.at(6)) {
