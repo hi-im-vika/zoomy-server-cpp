@@ -60,9 +60,6 @@ void CZoomyServer::deinit() {
 
 // TODO: split up image capture and rx data processing into threads
 void CZoomyServer::update() {
-    _video_capture.read(_frame);
-    cv::Mat smaller;
-    cv::resize(_frame,smaller,cv::Size(480,360));
     for (; !_rx_queue.empty(); _rx_queue.pop()) {
 
         // process received control values
@@ -73,13 +70,8 @@ void CZoomyServer::update() {
             _control.queue_new_gc_data(as_string);
         }
 
-        std::vector<uint8_t> encoded;
-        cv::imencode(".jpg", smaller, encoded);
-
         std::string payload("test");
-        std::vector<uint8_t> tx_assembled(payload.begin(),payload.end());
-        tx_assembled.insert(tx_assembled.end(),encoded.begin(),encoded.end());
-        _tx_queue.emplace(tx_assembled);
+        _tx_queue.emplace(payload);
     }
 
 }
