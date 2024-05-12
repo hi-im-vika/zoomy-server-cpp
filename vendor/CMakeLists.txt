@@ -3,9 +3,9 @@
 include(FetchContent)
 
 FetchContent_Declare(
-        vika-udp
-        GIT_REPOSITORY "https://github.com/hi-im-vika/vika-udp.git"
+        vika-net
+        GIT_REPOSITORY "https://github.com/hi-im-vika/vika-net.git"
         GIT_TAG         origin/main
 )
 
-add_subdirectory(vika-udp)
+add_subdirectory(vika-net)
