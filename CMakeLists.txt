@@ -26,4 +26,4 @@ add_executable(zoomy-server
         src/CMecanumMove.cpp
         include/CMecanumMove.hpp
 )
-target_link_libraries(zoomy-server ${OpenCV_LIBS} ${PIGPIO_LIBS} spdlog::spdlog vika-udp)
+target_link_libraries(zoomy-server ${OpenCV_LIBS} ${PIGPIO_LIBS} spdlog::spdlog vika-net)
