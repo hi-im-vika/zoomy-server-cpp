@@ -10,7 +10,7 @@
 #define NET_DELAY 1
 #define DEADZONE 2048
 
-CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
+CZoomyServer::CZoomyServer(std::string port) {
     _port = port;
     _output_pins.push_back(pins::LAUNCHER);
 
@@ -45,19 +45,6 @@ CZoomyServer::CZoomyServer(std::string port, std::string gstreamer_string) {
     // start send thread
     _thread_tx = std::thread(thread_tx, this);
     _thread_tx.detach();
-
-    // OpenCV init
-
-    spdlog::info("Launching GStreamer with the below options:");
-    spdlog::info("\"" + gstreamer_string + "\"");
-    _video_capture = cv::VideoCapture(std::string(gstreamer_string), cv::CAP_GSTREAMER);
-    if (!_video_capture.isOpened()) {
-        spdlog::error("Could not open camera.");
-        exit(-1);
-    } else {
-        spdlog::info("Camera opened with backend " + _video_capture.getBackendName());
-        _video_capture.read(_frame);
-    }
 }
 
 CZoomyServer::~CZoomyServer() {
@@ -155,11 +142,11 @@ void CZoomyServer::thread_tx(CZoomyServer *who_called) {
 
 int main(int argc, char *argv[]) {
 
-    if (argc != 3) {
-        std::cerr << "Usage: server <port> <gstreamer string>" << std::endl;
+    if (argc != 2) {
+        std::cerr << "Usage: server <port>" << std::endl;
         return 1;
     }
-    CZoomyServer c = CZoomyServer(argv[1], argv[2]);
+    CZoomyServer c = CZoomyServer(argv[1]);
     c.run();
     return 0;
 }
