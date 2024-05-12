@@ -71,7 +71,7 @@ void CZoomyServer::update() {
         }
 
         std::string payload("test");
-        _tx_queue.emplace(payload);
+        _tx_queue.emplace(payload.begin(), payload.end());
     }
 
 }
