@@ -8,7 +8,6 @@
 
 #include <spdlog/spdlog.h>
 #include <thread>
-#include <opencv2/opencv.hpp>
 
 /**
  * @brief A class designed to be inherited from to provide functions common to all
@@ -55,7 +54,6 @@ public:
     static void draw_thread(CCommonBase *who_called_me);
 
 protected:
-    cv::Size _window_size;      ///< The size of the window.
     std::chrono::steady_clock::time_point _perf_update_start;       ///< Start time for measuring performance.
     std::chrono::steady_clock::time_point _perf_draw_start;         ///< Start time for measuring performance.
     int _perf_update = 1;       ///< Measured update time in milliseconds.

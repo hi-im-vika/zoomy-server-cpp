@@ -2,7 +2,6 @@
 // Created by Ronal on 4/28/2024.
 //
 #pragma once
-#include <opencv2/opencv.hpp>
 #include <chrono>
 #include <math.h>
 #include "CControlPi.hpp"
