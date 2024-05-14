@@ -153,6 +153,10 @@ bool CControlPi::init_hmc5883l(i2c_ch ch, uint address) {
     return _ready_hmc5883l;
 }
 
+bool CControlPi::init_mpu6050(i2c_ch ch, uint address) {
+    return false;
+}
+
 void CControlPi::pca9685_motor_control(motor m, int value) {
     if (!_ready_pca9685) {
         spdlog::error("Device not ready.");
