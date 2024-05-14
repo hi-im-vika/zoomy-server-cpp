@@ -26,6 +26,13 @@ CZoomyServer::CZoomyServer(std::string port) {
         exit(-1);
     }
 
+    if (!_control.init_mpu6050(CControlPi::i2c_ch::CH0)) {
+        spdlog::error("Error during MPU6050 init.");
+        exit(-1);
+    }
+
+    exit(0);
+
     if (!_mecanum.init(&_control)) {
         spdlog::error("Error during CMecanumMove init.");
         exit(-1);
