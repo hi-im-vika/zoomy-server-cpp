@@ -40,7 +40,8 @@ public:
     };
     enum i2c_devices {
         ADDR_DEFAULT_PCA9685 = 0x40,
-        ADDR_DEFAULT_HMC5883L = 0x1E
+        ADDR_DEFAULT_HMC5883L = 0x1E,
+        ADDR_DEFAULT_MPU6050 = 0x68,
     };
 
 private:
@@ -91,6 +92,10 @@ private:
     int* _handle_hmc5883l;      ///< HMC5883L I2C handle pointer.
     i2c_ch _ch_hmc5883l;        ///< HMC5883L I2C channel on the Raspberry Pi.
 
+    bool _ready_mpu6050;        ///< MPU6050 initalization status.
+    int* _handle_mpu6050;       ///< MPU6050 I2C handle pointer.
+    i2c_ch _ch_mpu6050;         ///< MPU6050 I2C channel on the Raspberry pi.
+
     // gpio setup
     bool _ready_gpio;           ///< GPIO initialization status.
 
@@ -104,11 +109,13 @@ public:
 
     bool init_pca9685(i2c_ch ch, uint address = ADDR_DEFAULT_PCA9685);
     bool init_hmc5883l(i2c_ch ch, uint address = ADDR_DEFAULT_HMC5883L);
+    bool init_mpu6050(i2c_ch ch, uint address = ADDR_DEFAULT_MPU6050);
 
     void zap_com();
 
     void pca9685_motor_control(motor m, int value);
     bool hmc5883l_raw_data(std::vector<char> &data);
+    bool mpu6050_ypr_data(std::vector<float> &data);
 
     void queue_new_gc_data(std::string &data);
 

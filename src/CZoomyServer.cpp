@@ -25,16 +25,18 @@ CZoomyServer::CZoomyServer(std::string port) {
         exit(-1);
     }
 
+    if (!_control.init_mpu6050(CControlPi::i2c_ch::CH0)) {
+        spdlog::error("Error during MPU6050 init.");
+        exit(-1);
+    }
+
     if (!_mecanum.init(&_control)) {
         spdlog::error("Error during CMecanumMove init.");
         exit(-1);
     }
 
-    _joystick = std::vector(2, cv::Point(0, 0));
-
     // net init
     _timeout_count = std::chrono::steady_clock::now();
-
     _server.setup(_port);
 
     // start listen thread
@@ -57,12 +59,11 @@ void CZoomyServer::deinit() {
     _control.zap_com();
 }
 
-// TODO: split up image capture and rx data processing into threads
 void CZoomyServer::update() {
     for (; !_rx_queue.empty(); _rx_queue.pop()) {
 
         // process received control values
-        std::string as_string(std::string(_rx_queue.front().begin(),_rx_queue.front().end()));
+        std::string as_string(std::string(_rx_queue.front().begin(), _rx_queue.front().end()));
 
         // only process data if not ping
         if (as_string != "\005") {
@@ -93,15 +94,15 @@ void CZoomyServer::rx() {
     _rx_bytes = 0;
     _rx_buf.clear();
     _server.do_rx(_rx_buf, _client, _rx_bytes);
-    std::vector<uint8_t> temp(_rx_buf.begin(),_rx_buf.begin() + _rx_bytes);
+    std::vector<uint8_t> temp(_rx_buf.begin(), _rx_buf.begin() + _rx_bytes);
     // only add to rx queue if data is not empty
-    if(!temp.empty()) _rx_queue.emplace(temp);
+    if (!temp.empty()) _rx_queue.emplace(temp);
     std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(NET_DELAY));
 }
 
 void CZoomyServer::tx() {
     for (; !_tx_queue.empty(); _tx_queue.pop()) {
-        _server.do_tx(_tx_queue.front(),_client);
+        _server.do_tx(_tx_queue.front(), _client);
     }
     std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(NET_DELAY));
 }
