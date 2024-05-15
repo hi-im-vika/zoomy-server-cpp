@@ -31,8 +31,6 @@ CZoomyServer::CZoomyServer(std::string port) {
         exit(-1);
     }
 
-    exit(0);
-
     if (!_mecanum.init(&_control)) {
         spdlog::error("Error during CMecanumMove init.");
         exit(-1);
@@ -42,7 +40,6 @@ CZoomyServer::CZoomyServer(std::string port) {
 
     // net init
     _timeout_count = std::chrono::steady_clock::now();
-
     _server.setup(_port);
 
     // start listen thread
@@ -70,7 +67,7 @@ void CZoomyServer::update() {
     for (; !_rx_queue.empty(); _rx_queue.pop()) {
 
         // process received control values
-        std::string as_string(std::string(_rx_queue.front().begin(),_rx_queue.front().end()));
+        std::string as_string(std::string(_rx_queue.front().begin(), _rx_queue.front().end()));
 
         // only process data if not ping
         if (as_string != "\005") {
@@ -87,21 +84,19 @@ void CZoomyServer::draw() {
     auto local_values = _control.get_gc_values();
     if (hypot(local_values[0], local_values[1]) > DEADZONE) {
         _joystickA = {local_values[0], local_values[1]};
-    }
-    else {
+    } else {
         _joystickA = {0, 0};
     }
     if (hypot(local_values[2], local_values[3]) > DEADZONE) {
         _joystickB = {local_values[2], local_values[3]};
-    }
-    else {
+    } else {
         _joystickB = {0, 0};
     }
     _mecanum.moveOmni(_joystickA[0], _joystickA[1], _joystickB[0]);
     //_mecanum.moveTank(_joystickB[1], _joystickA[1]);
 
     // conform to OOP standards later!!
-    if(local_values.at(6)) {
+    if (local_values.at(6)) {
         gpioWrite(pins::LAUNCHER, PI_ON);
     } else {
         gpioWrite(pins::LAUNCHER, PI_OFF);
@@ -114,15 +109,15 @@ void CZoomyServer::rx() {
     _rx_bytes = 0;
     _rx_buf.clear();
     _server.do_rx(_rx_buf, _client, _rx_bytes);
-    std::vector<uint8_t> temp(_rx_buf.begin(),_rx_buf.begin() + _rx_bytes);
+    std::vector<uint8_t> temp(_rx_buf.begin(), _rx_buf.begin() + _rx_bytes);
     // only add to rx queue if data is not empty
-    if(!temp.empty()) _rx_queue.emplace(temp);
+    if (!temp.empty()) _rx_queue.emplace(temp);
     std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(NET_DELAY));
 }
 
 void CZoomyServer::tx() {
     for (; !_tx_queue.empty(); _tx_queue.pop()) {
-        _server.do_tx(_tx_queue.front(),_client);
+        _server.do_tx(_tx_queue.front(), _client);
     }
     std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(NET_DELAY));
 }
