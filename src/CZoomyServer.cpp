@@ -62,7 +62,6 @@ void CZoomyServer::deinit() {
     _control.zap_com();
 }
 
-// TODO: split up image capture and rx data processing into threads
 void CZoomyServer::update() {
     for (; !_rx_queue.empty(); _rx_queue.pop()) {
 
