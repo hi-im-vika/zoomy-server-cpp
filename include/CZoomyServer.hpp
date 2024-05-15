@@ -7,7 +7,7 @@
 #pragma once
 
 #include <iostream>
-#include <math.h>
+#include <cmath>
 #include <spdlog/fmt/fmt.h>
 #include <CUDPServer.hpp>
 #include "CCommonBase.hpp"
@@ -41,7 +41,6 @@ private:
     // movement
     std::vector<cv::Point> _joystick;
     CMecanumMove _mecanum;
-    std::vector<char> _raw_cmps_values;
 
     // net
     std::string _port;
@@ -57,16 +56,11 @@ private:
     std::vector<int> _input_pins, _output_pins;
     CControlPi _control;
 
-    // OpenCV
-    cv::Mat _frame;
-    cv::Mat _camera_frame;
-    cv::VideoCapture _video_capture;
-
     void rx();
     void tx();
 
 public:
-    CZoomyServer(std::string port, std::string gstreamer_string);
+    CZoomyServer(std::string port);
     ~CZoomyServer();
 
     void deinit();
