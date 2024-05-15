@@ -87,7 +87,7 @@ bool CControlPi::init_gpio(const std::vector<int> &input_pins, std::vector<int> 
 bool CControlPi::init_i2c(i2c_ch ch, uint address) {
     int *temp_handle;
     bool *temp_status;
-    switch(ch) {
+    switch (ch) {
         case i2c_ch::CH0:
             temp_handle = &_i2c_handle_ch0;
             temp_status = &_ready_i2c_ch0;
@@ -134,9 +134,9 @@ bool CControlPi::init_hmc5883l(i2c_ch ch, uint address) {
         return false;
     }
 
-    std::vector<char> buffer(3,'\1');
+    std::vector<char> buffer(3, '\1');
 
-    if(!i2c_read_block(ch, 0x0A, buffer, (int) buffer.size())) {
+    if (!i2c_read_block(ch, 0x0A, buffer, (int) buffer.size())) {
         spdlog::error("Error during ID read");
         return false;
     }
@@ -146,7 +146,7 @@ bool CControlPi::init_hmc5883l(i2c_ch ch, uint address) {
         return false;
     }
 
-    if(!i2c_write_byte(ch, 0x02,0) != 0) {
+    if (!i2c_write_byte(ch, 0x02, 0) != 0) {
         spdlog::error("Mode set error.");
         return false;
     }
@@ -243,7 +243,7 @@ bool CControlPi::hmc5883l_raw_data(std::vector<char> &data) {
         spdlog::error("Device not ready.");
         return false;
     }
-    if (!i2c_read_block(_ch_hmc5883l,0x03,data,6)) {
+    if (!i2c_read_block(_ch_hmc5883l, 0x03, data, 6)) {
         return false;
     }
     return true;
@@ -262,7 +262,7 @@ void CControlPi::process_gc(std::string &gc) {
     std::string temp;
     ss.str(gc);
     int idx = 0;
-    while(ss >> temp) {
+    while (ss >> temp) {
         _gc_values.at(idx) = std::stoi(temp);
         idx++;
     }
@@ -273,7 +273,7 @@ void CControlPi::thread_process_gc(CControlPi *who_called) {
         for (; !who_called->_gc_queue.empty(); who_called->_gc_queue.pop()) {
             who_called->process_gc(who_called->_gc_queue.front());
         }
-    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(1));
+        std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(1));
     }
 }
 
@@ -289,7 +289,7 @@ bool CControlPi::get_i2c_status(i2c_ch ch) {
     }
 }
 
-int* CControlPi::get_i2c_handle(i2c_ch ch) {
+int *CControlPi::get_i2c_handle(i2c_ch ch) {
     switch (ch) {
         case i2c_ch::CH0:
             return &_i2c_handle_ch0;
@@ -302,7 +302,7 @@ int* CControlPi::get_i2c_handle(i2c_ch ch) {
 
 bool CControlPi::i2c_write_byte(i2c_ch ch, uint reg, uint val) {
     if (!get_i2c_status(ch)) return false;
-    if(i2cWriteByteData(*get_i2c_handle(ch),reg,val) != 0) {
+    if (i2cWriteByteData(*get_i2c_handle(ch), reg, val) != 0) {
         return false;
     }
     return true;
@@ -310,8 +310,8 @@ bool CControlPi::i2c_write_byte(i2c_ch ch, uint reg, uint val) {
 
 bool CControlPi::i2c_read_byte(i2c_ch ch, uint reg, uint8_t &data) {
     if (!get_i2c_status(ch)) return false;
-    uint8_t raw_data = i2cReadByteData(*get_i2c_handle(ch),reg);
-    if(raw_data < 0) {
+    uint8_t raw_data = i2cReadByteData(*get_i2c_handle(ch), reg);
+    if (raw_data < 0) {
         return false;
     }
     data = raw_data;
@@ -320,8 +320,8 @@ bool CControlPi::i2c_read_byte(i2c_ch ch, uint reg, uint8_t &data) {
 
 bool CControlPi::i2c_read_block(i2c_ch ch, uint reg, std::vector<char> &buf, int bytes) {
     if (!get_i2c_status(ch)) return false;
-    std::vector<char> temp_buf(bytes,'\1');
-    if(i2cReadI2CBlockData(*get_i2c_handle(ch), reg, temp_buf.data(), bytes) <= 0) {
+    std::vector<char> temp_buf(bytes, '\1');
+    if (i2cReadI2CBlockData(*get_i2c_handle(ch), reg, temp_buf.data(), bytes) <= 0) {
         return false;
     }
     buf = temp_buf;
@@ -330,7 +330,7 @@ bool CControlPi::i2c_read_block(i2c_ch ch, uint reg, std::vector<char> &buf, int
 
 bool CControlPi::i2c_write_block(i2c_ch ch, uint reg, std::vector<char> &buf) {
     if (!get_i2c_status(ch)) return false;
-    if(i2cWriteI2CBlockData(*get_i2c_handle(ch),reg,buf.data(), buf.size()) != 0) {
+    if (i2cWriteI2CBlockData(*get_i2c_handle(ch), reg, buf.data(), buf.size()) != 0) {
         return false;
     }
     return true;
@@ -338,7 +338,7 @@ bool CControlPi::i2c_write_block(i2c_ch ch, uint reg, std::vector<char> &buf) {
 
 bool CControlPi::i2c_write_word(i2c_ch ch, uint reg, uint word) {
     if (!get_i2c_status(ch)) return false;
-    if(i2cWriteWordData(*get_i2c_handle(ch),reg,word) != 0) {
+    if (i2cWriteWordData(*get_i2c_handle(ch), reg, word) != 0) {
         return false;
     }
     return true;
