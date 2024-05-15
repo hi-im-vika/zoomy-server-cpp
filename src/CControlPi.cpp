@@ -26,6 +26,9 @@ CControlPi::CControlPi() {
     _ready_hmc5883l = false;
     _handle_hmc5883l = nullptr;
 
+    _ready_mpu6050 = false;
+    _handle_mpu6050 = nullptr;
+
     // game controller
     _gc_values = std::vector<int>(10, 0);
 
