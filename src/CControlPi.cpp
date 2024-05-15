@@ -268,6 +268,121 @@ bool CControlPi::hmc5883l_raw_data(std::vector<char> &data) {
     return true;
 }
 
+// MAY BE BLOCKING FOR UP TO 10 MS
+bool CControlPi::mpu6050_ypr_data(std::vector<float> &data) {
+    if (!_ready_mpu6050) {
+        spdlog::error("Device not ready.");
+        return false;
+    }
+
+    // set up fifo counter
+    std::vector<char> fifo_bytes(2, '\1');
+    std::vector<char> raw_fifo_pkt(42, '\1');
+    int fifo_num_bytes = 0;
+    bool new_data = false;
+
+    // reset fifo
+    // get user_ctrl register
+    std::vector<char> user_ctrl(1, '\1');
+    if (!i2c_read_block(_ch_mpu6050, 0x6A, user_ctrl, (int) user_ctrl.size())) {
+        spdlog::error("Error during user_ctrl read");
+        return false;
+    }
+    // set reset fifo bit
+    user_ctrl.at(0) |= 0b00000100;
+    // write user_ctrl register
+    if (!i2c_write_block(_ch_mpu6050, 0x6A, user_ctrl)) {
+        spdlog::error("Error during user_ctrl write");
+        return false;
+    }
+
+    do {
+        // init temp data vector
+        raw_fifo_pkt.clear();
+
+        // retrieve fifo packets
+        if (!i2c_read_block(_ch_mpu6050, 0x72, fifo_bytes, fifo_bytes.size())) {
+//            return false;
+        }
+        fifo_num_bytes = fifo_bytes.at(0) << 8 | fifo_bytes.at(1);
+        if (fifo_num_bytes > 42) {
+            // reset fifo
+            // get user_ctrl register
+            std::vector<char> user_ctrl(1, '\1');
+            if (!i2c_read_block(_ch_mpu6050, 0x6A, user_ctrl, (int) user_ctrl.size())) {
+                spdlog::error("Error during user_ctrl read");
+                return false;
+            }
+            // set reset fifo bit
+            user_ctrl.at(0) |= 0b00000100;
+            // write user_ctrl register
+            if (!i2c_write_block(_ch_mpu6050, 0x6A, user_ctrl)) {
+                spdlog::error("Error during user_ctrl write");
+                return false;
+            }
+        } else if (fifo_num_bytes == 42) {
+            std::vector<char> pkt_part_one(32, '\1');
+            if (!i2c_read_block(_ch_mpu6050, 0x74, pkt_part_one, 32)) {
+//                return false;
+            }
+            raw_fifo_pkt = pkt_part_one;
+            std::vector<char> pkt_part_two(10, '\1');
+            if (!i2c_read_block(_ch_mpu6050, 0x74, pkt_part_two, 10)) {
+//                return false;
+            }
+            raw_fifo_pkt.insert(raw_fifo_pkt.end(), pkt_part_two.begin(), pkt_part_two.end());
+
+            // below code is from i2cdevlib
+            int16_t raw_quat[4];
+            float quat[4];
+            float grav[3];
+            float ypr[3];
+
+            // refine raw quaternion values
+            raw_quat[0] = ((raw_fifo_pkt[0] << 8) | raw_fifo_pkt[1]);
+            raw_quat[1] = ((raw_fifo_pkt[4] << 8) | raw_fifo_pkt[5]);
+            raw_quat[2] = ((raw_fifo_pkt[8] << 8) | raw_fifo_pkt[9]);
+            raw_quat[3] = ((raw_fifo_pkt[12] << 8) | raw_fifo_pkt[13]);
+
+            // process raw quaternion values
+            quat[0] = (float) raw_quat[0] / 16384.0f;
+            quat[1] = (float) raw_quat[1] / 16384.0f;
+            quat[2] = (float) raw_quat[2] / 16384.0f;
+            quat[3] = (float) raw_quat[3] / 16384.0f;
+
+            // get gravity values
+            grav[0] = 2 * (quat[1] * quat[3] - quat[0] * quat[2]);
+            grav[1] = 2 * (quat[0] * quat[1] + quat[2] * quat[3]);
+            grav[2] = quat[0] * quat[0] - quat[1] * quat[1] - quat[2] * quat[2] + quat[3] * quat[3];
+
+            // combine to form yaw, pitch, roll values
+            ypr[0] = atan2(2 * quat[1] * quat[2] - 2 * quat[0] * quat[3],
+                           2 * quat[0] * quat[0] + 2 * quat[1] * quat[1] - 1);
+            ypr[1] = atan2(grav[0], sqrt(grav[1] * grav[1] + grav[2] * grav[2]));
+            ypr[2] = atan2(grav[1], grav[2]);
+            if (grav[2] < 0) {
+                if (ypr[1] > 0) {
+                    ypr[1] = M_PI - ypr[1];
+                } else {
+                    ypr[1] = -M_PI - ypr[1];
+                }
+            }
+
+            new_data = true;
+            data.clear();
+            data.emplace_back(ypr[0] * 180 / M_PI);
+            data.emplace_back(ypr[1] * 180 / M_PI);
+            data.emplace_back(ypr[2] * 180 / M_PI);
+//            spdlog::info("YPR {:03.5f} {:03.5f} {:03.5f}", ypr[0] * 180 / M_PI, ypr[1] * 180 / M_PI,
+//                         ypr[2] * 180 / M_PI);
+        } else {
+            // no pkts
+        }
+    } while (!new_data);
+    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(1));
+    return true;
+}
+
 void CControlPi::queue_new_gc_data(std::string &data) {
     _gc_queue.emplace(data);
 }
