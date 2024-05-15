@@ -92,6 +92,10 @@ private:
     int* _handle_hmc5883l;      ///< HMC5883L I2C handle pointer.
     i2c_ch _ch_hmc5883l;        ///< HMC5883L I2C channel on the Raspberry Pi.
 
+    bool _ready_mpu6050;        ///< MPU6050 initalization status.
+    int* _handle_mpu6050;       ///< MPU6050 I2C handle pointer.
+    i2c_ch _ch_mpu6050;         ///< MPU6050 I2C channel on the Raspberry pi.
+
     // gpio setup
     bool _ready_gpio;           ///< GPIO initialization status.
 
@@ -111,7 +115,7 @@ public:
 
     void pca9685_motor_control(motor m, int value);
     bool hmc5883l_raw_data(std::vector<char> &data);
-    bool mpu6050_raw_data(std::vector<char> &data);
+    bool mpu6050_ypr_data(std::vector<float> &data);
 
     void queue_new_gc_data(std::string &data);
 
