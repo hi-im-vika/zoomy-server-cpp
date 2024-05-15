@@ -158,7 +158,26 @@ bool CControlPi::init_hmc5883l(i2c_ch ch, uint address) {
 }
 
 bool CControlPi::init_mpu6050(i2c_ch ch, uint address) {
-    return false;
+    if (!init_i2c(ch, address)) {
+        return false;
+    }
+
+    std::vector<char> buffer(1, '\1');
+
+    if (!i2c_read_block(ch, 0x75, buffer, (int) buffer.size())) {
+        spdlog::error("Error during ID read");
+        return false;
+    }
+
+    if (buffer.at(0) != 0x68) {
+        spdlog::error("MPU6050 not detected.");
+        return false;
+    }
+
+    _ready_mpu6050 = true;
+    _handle_mpu6050 = get_i2c_handle(ch);
+    _ch_mpu6050 = ch;
+    return _ready_mpu6050;
 }
 
 void CControlPi::pca9685_motor_control(motor m, int value) {
