@@ -77,8 +77,8 @@ void CZoomyServer::update() {
 }
 
 void CZoomyServer::draw() {
-    _mecanum.moveOmni(-_joystick[1].x, _joystick[1].y, -_joystick[0].x);
-    //_mecanum.moveTank(_joystick[1].y _joystick[0].y);
+    _mecanum.moveOmni(-_control.get_gc_values()[0], _control.get_gc_values()[1], _control.get_gc_values()[2], _control.get_gc_values()[3]);
+    //_mecanum.setRotation(_control.get_gc_values()[4] - 180.0);
 
     // conform to OOP standards later!!
     if(_control.get_gc_values().at(6)) {
