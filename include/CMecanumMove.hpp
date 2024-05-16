@@ -36,7 +36,7 @@ public:
 
     bool init(CControlPi* control, float speedModifier = 0.5, bool relation = GLOBAL);
 
-    void moveOmni(int x = 0, int y = 0, int r = 0);
+    void moveOmni(int x = 0, int y = 0, int ra = 0, int rb = 0);
 
     void moveTank(int l = 0, int r = 0);
 
