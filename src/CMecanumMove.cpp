@@ -102,3 +102,7 @@ void CMecanumMove::moveTank(int l, int r) {
 void CMecanumMove::setRelation(bool relation) {
     _relation = relation;
 }
+
+void CMecanumMove::setRotation(int angle) {
+    _rotation = angle;
+}
