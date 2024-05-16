@@ -41,6 +41,26 @@ void CMecanumMove::moveThread(CMecanumMove* ptr) {
 void CMecanumMove::driveControl() {
     int delta = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - _deltaTime).count();
     _deltaTime = std::chrono::steady_clock::now();
+    _control->mpu6050_ypr_data(_angle);
+
+    _rotation += delta * _turn[0] / 81920.0;
+    if (_rotation <= -180.0) {
+        _rotation += 360.0;
+    } else if (_rotation >= 180.0) {
+        _rotation -= 360.0;
+    }
+
+    float angle = _angle[0] - _rotation;
+
+    if (angle >= 180.0) {
+        angle = angle - 360.0;
+    }
+    else if (angle <= -180.0) {
+        angle = angle + 360.0;
+    }
+
+    std::vector<float> rotationOffset = {angle * ROTATION_SPEED, -angle * ROTATION_SPEED, angle * ROTATION_SPEED, -angle * ROTATION_SPEED};
+
     for (int i = 0; i < _wheelSpeed.size(); i++) {
         _wheelVel[i] += (_wheelSpeed[i] - _wheelVel[i]) * ACCELERATION * delta;
         _control->pca9685_motor_control(CControlPi::motor(i), _wheelVel[i]);
@@ -49,18 +69,27 @@ void CMecanumMove::driveControl() {
 
 void CMecanumMove::moveOmni(int x, int y, int r) {
     unsigned int speed = _speedModifier * hypot(x, y);
-    float theta = atan2(-x, -y);
-    int rotation = _speedModifier * r *0.65;
-    _wheelSpeed[NW] = speed * (cos(theta) - sin(theta)) - rotation;
-    _wheelSpeed[SW] = speed * (cos(theta) + sin(theta)) - rotation;
-    _wheelSpeed[NE] = speed * (cos(theta) + sin(theta)) + rotation;
-    _wheelSpeed[SE] = speed * (cos(theta) - sin(theta)) + rotation;
+    float theta;
     if (_relation) {
         theta = atan2(x, y) - (_angle[0] * M_PI / 180.0);
     }
     else {
         theta = atan2(x, y);
     }
+
+    if (theta >= M_PI) {
+        theta -= M_PI * 2;
+    }
+    else if (theta <= -M_PI) {
+        theta += M_PI * 2;
+    }
+
+    _turn = {ra, rb};
+
+    _wheelSpeed[NW] = speed * (cos(theta) - sin(theta));
+    _wheelSpeed[SW] = speed * (cos(theta) + sin(theta));
+    _wheelSpeed[NE] = speed * (cos(theta) + sin(theta));
+    _wheelSpeed[SE] = speed * (cos(theta) - sin(theta));
 }
 
 void CMecanumMove::moveTank(int l, int r) {
