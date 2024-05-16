@@ -4,7 +4,8 @@
 
 #include "../include/CMecanumMove.hpp"
 
-#define ACCELERATION 0.02
+#define ACCELERATION 0.0125
+#define ROTATION_SPEED 14
 
 CMecanumMove::CMecanumMove() = default;
 
