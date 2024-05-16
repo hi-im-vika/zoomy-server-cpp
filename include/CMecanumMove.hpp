@@ -4,6 +4,7 @@
 #pragma once
 #include <chrono>
 #include <math.h>
+#include <spdlog/spdlog.h>
 #include "CControlPi.hpp"
 
 enum wheel{NW = 0, NE, SW, SE};
