@@ -16,9 +16,10 @@ private:
 
     float _speedModifier;
 
-    std::vector<int> _wheelSpeed;
+    std::vector<int> _wheelSpeed, _wheelVel;
 
-    std::vector<int> _wheelVel;
+    std::vector<float> _angle;
+    float _rotation;
 
     std::chrono::steady_clock::time_point _deltaTime;
 
