@@ -43,4 +43,6 @@ public:
     void moveTank(int l = 0, int r = 0);
 
     void setRelation(bool relation);
+
+    void setRotation(int angle);
 };
