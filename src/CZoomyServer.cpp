@@ -30,7 +30,7 @@ CZoomyServer::CZoomyServer(std::string port) {
         exit(-1);
     }
 
-    if (!_mecanum.init(&_control)) {
+    if (!_mecanum.init(&_control, 0.35, true)) {
         spdlog::error("Error during CMecanumMove init.");
         exit(-1);
     }
