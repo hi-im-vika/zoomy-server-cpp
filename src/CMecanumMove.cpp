@@ -62,7 +62,7 @@ void CMecanumMove::driveControl() {
     std::vector<float> rotationOffset = {angle * ROTATION_SPEED, -angle * ROTATION_SPEED, angle * ROTATION_SPEED, -angle * ROTATION_SPEED};
 
     for (int i = 0; i < _wheelSpeed.size(); i++) {
-        _wheelVel[i] += (_wheelSpeed[i] - _wheelVel[i]) * ACCELERATION * delta;
+        _wheelVel[i] += ((_wheelSpeed[i] - _wheelVel[i]) + rotationOffset[i]) * ACCELERATION * delta;
         _control->pca9685_motor_control(CControlPi::motor(i), _wheelVel[i]);
     }
 }
