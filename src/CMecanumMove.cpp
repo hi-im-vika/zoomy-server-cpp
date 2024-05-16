@@ -39,9 +39,6 @@ void CMecanumMove::moveThread(CMecanumMove* ptr) {
 }
 
 void CMecanumMove::driveControl() {
-    if (_relation) {
-        // todo relative motion controls
-    }
     int delta = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - _deltaTime).count();
     _deltaTime = std::chrono::steady_clock::now();
     for (int i = 0; i < _wheelSpeed.size(); i++) {
@@ -58,6 +55,12 @@ void CMecanumMove::moveOmni(int x, int y, int r) {
     _wheelSpeed[SW] = speed * (cos(theta) + sin(theta)) - rotation;
     _wheelSpeed[NE] = speed * (cos(theta) + sin(theta)) + rotation;
     _wheelSpeed[SE] = speed * (cos(theta) - sin(theta)) + rotation;
+    if (_relation) {
+        theta = atan2(x, y) - (_angle[0] * M_PI / 180.0);
+    }
+    else {
+        theta = atan2(x, y);
+    }
 }
 
 void CMecanumMove::moveTank(int l, int r) {
