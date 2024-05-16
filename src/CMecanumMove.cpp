@@ -67,7 +67,7 @@ void CMecanumMove::driveControl() {
     }
 }
 
-void CMecanumMove::moveOmni(int x, int y, int r) {
+void CMecanumMove::moveOmni(int x, int y, int ra, int rb) {
     unsigned int speed = _speedModifier * hypot(x, y);
     float theta;
     if (_relation) {
