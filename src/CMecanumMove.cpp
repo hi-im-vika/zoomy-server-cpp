@@ -16,6 +16,9 @@ CMecanumMove::~CMecanumMove() {
 bool CMecanumMove::init(CControlPi* control, float speedModifier, bool relation) {
     _control = control;
     _relation = relation;
+    _turn = {0, 0};
+    _angle = {0.0, 0.0, 0.0};
+    _rotation = 0.0;
     _speedModifier = speedModifier / 8.0;
     _wheelSpeed = {0, 0, 0, 0};
     _wheelVel = {0, 0, 0, 0};
