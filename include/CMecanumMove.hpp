@@ -15,6 +15,7 @@ private:
     CControlPi* _control;
 
     float _speedModifier;
+    std::vector<int> _turn;
 
     std::vector<int> _wheelSpeed, _wheelVel;
 
