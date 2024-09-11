@@ -8,7 +8,7 @@
 
 #define PING_TIMEOUT 1000
 #define NET_DELAY 1
-#define DEADZONE 2048
+#define DEADZONE 6144
 
 CZoomyServer::CZoomyServer(std::string port) {
     _port = port;
@@ -91,7 +91,7 @@ void CZoomyServer::draw() {
     } else {
         _joystickB = {0, 0};
     }
-    _mecanum.moveOmni(_joystickA[0], _joystickA[1], _joystickB[0]);
+    _mecanum.moveOmni(-_joystickA[0], _joystickA[1], _joystickB[0]);
     //_mecanum.moveTank(_joystickB[1], _joystickA[1]);
 
     // conform to OOP standards later!!

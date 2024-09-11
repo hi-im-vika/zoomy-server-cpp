@@ -34,7 +34,7 @@ public:
 
     ~CMecanumMove();
 
-    bool init(CControlPi* control, float speedModifier = 0.5, bool relation = GLOBAL);
+    bool init(CControlPi* control, float speedModifier = 0.69, bool relation = GLOBAL);
 
     void moveOmni(int x = 0, int y = 0, int r = 0);
 
