@@ -15,7 +15,7 @@ private:
     CControlPi* _control;
 
     float _speedModifier;
-    std::vector<int> _turn;
+    int _turn;
 
     std::vector<int> _wheelSpeed, _wheelVel;
 
@@ -39,11 +39,11 @@ public:
 
     bool init(CControlPi* control, float speedModifier = 0.5, bool relation = GLOBAL);
 
-    void moveOmni(int x = 0, int y = 0, int ra = 0, int rb = 0);
+    void moveOmni(int x = 0, int y = 0);
 
     void moveTank(int l = 0, int r = 0);
 
     void setRelation(bool relation);
 
-    void setRotation(int angle);
+     void setRotation(int angle);
 };

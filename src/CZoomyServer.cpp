@@ -30,7 +30,7 @@ CZoomyServer::CZoomyServer(std::string port) {
         exit(-1);
     }
 
-    if (!_mecanum.init(&_control, 0.35, true)) {
+    if (!_mecanum.init(&_control, 0.5, true)) {
         spdlog::error("Error during CMecanumMove init.");
         exit(-1);
     }
@@ -77,7 +77,7 @@ void CZoomyServer::update() {
 }
 
 void CZoomyServer::draw() {
-    _mecanum.moveOmni(_control.get_gc_values()[0], -_control.get_gc_values()[1], _control.get_gc_values()[2], _control.get_gc_values()[3]);
+    _mecanum.moveOmni(_control.get_gc_values()[0], -_control.get_gc_values()[1]);
     _mecanum.setRotation(_control.get_gc_values()[4] - 180.0);
 
     // conform to OOP standards later!!

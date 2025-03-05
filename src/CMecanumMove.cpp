@@ -4,8 +4,8 @@
 
 #include "../include/CMecanumMove.hpp"
 
-#define ACCELERATION 0.0125
-#define ROTATION_SPEED 14
+#define ACCELERATION 0.01
+#define ROTATION_SPEED 12
 
 CMecanumMove::CMecanumMove() = default;
 
@@ -16,7 +16,7 @@ CMecanumMove::~CMecanumMove() {
 bool CMecanumMove::init(CControlPi* control, float speedModifier, bool relation) {
     _control = control;
     _relation = relation;
-    _turn = {0, 0};
+    _turn = 0;
     _angle = {0.0, 0.0, 0.0};
     _rotation = 0.0;
     _speedModifier = speedModifier / 8.0;
@@ -43,7 +43,6 @@ void CMecanumMove::driveControl() {
     _deltaTime = std::chrono::steady_clock::now();
     _control->mpu6050_ypr_data(_angle);
 
-    _rotation += delta * _turn[0] / 81920.0;
     if (_rotation <= -180.0) {
         _rotation += 360.0;
     } else if (_rotation >= 180.0) {
@@ -67,7 +66,7 @@ void CMecanumMove::driveControl() {
     }
 }
 
-void CMecanumMove::moveOmni(int x, int y, int ra, int rb) {
+void CMecanumMove::moveOmni(int x, int y) {
     unsigned int speed = _speedModifier * hypot(x, y);
     float theta;
     if (_relation) {
@@ -83,8 +82,6 @@ void CMecanumMove::moveOmni(int x, int y, int ra, int rb) {
     else if (theta <= -M_PI) {
         theta += M_PI * 2;
     }
-
-    _turn = {ra, rb};
 
     _wheelSpeed[NW] = speed * (cos(theta) - sin(theta));
     _wheelSpeed[SW] = speed * (cos(theta) + sin(theta));
